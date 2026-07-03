@@ -1,0 +1,17 @@
+/* TEAM */
+  human: Lucca Prada
+  contact: luccaprada25@gmail.com
+  github: luccahp1
+  location: somewhere north enough that "eavestroughs" is a normal word
+
+/* SITE */
+  built with: html, css, javascript, and no frameworks whatsoever
+  hosted on: whatever the closet server feels like that day
+  fonts: fraunces, caveat, and whatever monospace your machine likes
+  doctrine: software should feel like a person made it
+
+/* NOTES */
+  the ghost is real. it's you, from last time.
+  the guestbook backend is my inbox.
+  the tape on the cards is load-bearing.
+  if you're reading this file, you're the target audience.

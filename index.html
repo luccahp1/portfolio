@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f7f3ea" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#141110" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="lucca prada builds small software for real businesses. this site remembers you, lets you draw on it, and prints as a résumé.">
+  <meta name="author" content="Lucca Prada">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="author" href="humans.txt">
+  <title>lucca prada — small software, made by hand</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,600&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip" href="#main">skip to content</a>
+
+  <!-- the lamp cord. pull it. -->
+  <button class="cord" id="cord" aria-label="toggle the lights" title="the lights">
+    <svg viewBox="0 0 24 90" width="24" height="90" aria-hidden="true">
+      <line x1="12" y1="0" x2="12" y2="70" class="cord-line"/>
+      <circle cx="12" cy="76" r="6" class="cord-knob"/>
+    </svg>
+  </button>
+
+  <header class="top">
+    <span class="wordmark">lucca prada</span>
+    <span class="top-right mono"><span id="clock">--:--</span> your time</span>
+  </header>
+
+  <main id="main" class="page">
+
+    <!-- ============ hello ============ -->
+    <section id="hello" class="hero" aria-label="introduction">
+      <p class="hand greeting" id="greeting">hi, you're new here.</p>
+      <h1 class="display">
+        i'm lucca. i build
+        <span class="u">small software<svg class="squig" viewBox="0 0 120 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2 6 C 18 2, 38 9, 58 5 S 96 2, 118 6"/></svg></span>
+        for real businesses.
+      </h1>
+      <p class="lede">the kind where the owner still picks up the phone. lately i've been
+      teaching robots to pick it up politely instead.</p>
+      <aside class="note note-right" aria-hidden="true">
+        <svg class="arrow" viewBox="0 0 60 40" aria-hidden="true"><path d="M56 6 C 40 26, 24 30, 6 24 M14 18 L6 24 L14 29"/></svg>
+        wrote eleven drafts of this line.<br>kept the plain one.
+      </aside>
+    </section>
+
+    <!-- ============ now ============ -->
+    <section id="now" aria-labelledby="now-h">
+      <h2 id="now-h" class="display h2">now<span class="h-under" aria-hidden="true"></span></h2>
+      <ul class="now-list">
+        <li>building <strong>atrio</strong> and <strong>outpace</strong> — two ai tools for small service businesses</li>
+        <li>pitching them to a real eavestroughs company. a live call. no slides, just the working thing</li>
+        <li>keeping the server in my closet fed and warm</li>
+      </ul>
+      <p class="mono micro">last updated jul 2, 2026 — by hand, like everything here</p>
+    </section>
+
+    <!-- ============ work ============ -->
+    <section id="work" aria-labelledby="work-h">
+      <h2 id="work-h" class="display h2">things i've built<span class="h-under" aria-hidden="true"></span></h2>
+      <p class="mono micro status-line">first two: currently being pitched to an actual eavestroughs company. wish me luck.</p>
+
+      <div class="cards">
+        <article class="card tilt-a" id="outpace">
+          <span class="tape" aria-hidden="true"></span>
+          <h3 class="display">outpace</h3>
+          <p>answers a business's new leads in minutes, in the owner's own voice, and follows up
+          until a human replies. built for trades that leak leads on nights and weekends —
+          because the first company to answer usually wins the job.</p>
+          <p class="mono stack">next.js · claude · turso</p>
+          <p class="hand card-note">the hard part wasn't the ai. it was teaching it to be polite about following up.</p>
+        </article>
+
+        <article class="card tilt-b" id="atrio">
+          <span class="tape" aria-hidden="true"></span>
+          <h3 class="display">atrio</h3>
+          <p>an ai front desk. a phone receptionist that learns a business by reading its website,
+          then answers calls like it has worked there for years. no menus, no "press 2".</p>
+          <p class="mono stack">next.js · vapi · claude</p>
+          <p class="hand card-note">yes, it's a robot that answers phones. no, it will not put you on hold.</p>
+        </article>
+
+        <article class="card tilt-a" id="server">
+          <span class="tape" aria-hidden="true"></span>
+          <h3 class="display">luccaserver</h3>
+          <p>an ubuntu box in my closet that hosts my experiments. nginx, tailscale, systemd,
+          and one very determined little fan. everything i build eventually moves in.</p>
+          <p class="mono stack">ubuntu · nginx · a closet</p>
+          <p class="hand card-note">uptime is a collaboration between me and the power grid.</p>
+        </article>
+
+        <article class="card tilt-b" id="site">
+          <span class="tape" aria-hidden="true"></span>
+          <h3 class="display">this site</h3>
+          <p>the thing you're reading. html, css and javascript written by hand — no framework,
+          no template, no build step. it remembers your visits, keeps your doodles, and haunts
+          you with your own cursor. all of it stays in <em>your</em> browser.</p>
+          <p class="mono stack">html · css · js · nothing else</p>
+          <p class="hand card-note">even the wobbles are on purpose. most of them.</p>
+          <p><a href="https://github.com/luccahp1/portfolio">read the source →</a></p>
+        </article>
+      </div>
+
+      <aside class="note note-left" aria-hidden="true">
+        <svg class="arrow flip" viewBox="0 0 60 40" aria-hidden="true"><path d="M4 6 C 20 26, 36 30, 54 24 M46 18 L54 24 L46 29"/></svg>
+        these cards are index cards.<br>the tape is load-bearing.
+      </aside>
+    </section>
+
+    <!-- ============ about ============ -->
+    <section id="about" aria-labelledby="about-h">
+      <h2 id="about-h" class="display h2">about<span class="h-under" aria-hidden="true"></span></h2>
+      <p>i like owning the whole thing — the pitch, the code, the deploy, the 2am when it breaks.
+      i build with ai every day, and i still think software should feel like a person made it.
+      that's the whole philosophy, really: small tools, real businesses, fingerprints left on.</p>
+      <p>i live somewhere north enough that "eavestroughs" is a normal word.</p>
+      <aside class="note note-right" aria-hidden="true">also: coffee.</aside>
+    </section>
+
+    <!-- ============ guestbook ============ -->
+    <section id="guestbook" aria-labelledby="guestbook-h">
+      <h2 id="guestbook-h" class="display h2">guestbook <span class="hand h2-aside">(analog)</span><span class="h-under" aria-hidden="true"></span></h2>
+      <p>no database. no backend. <a href="mailto:luccaprada25@gmail.com?subject=guestbook&body=hi lucca, put me in the guestbook. sign me as:">email me</a> something nice — or weird —
+      and i will hand-type your name into this html file. that's the whole system.
+      it has never gone down.</p>
+      <ul class="guest-list hand">
+        <!-- guests get added here, one <li> each. yes, by hand. it's nicer that way. -->
+        <li>— nobody yet. the html is ready when you are.</li>
+      </ul>
+    </section>
+
+    <!-- ============ say hi ============ -->
+    <section id="hi" aria-labelledby="hi-h">
+      <h2 id="hi-h" class="display h2">say hi<span class="h-under" aria-hidden="true"></span></h2>
+      <p class="say-hi">
+        <a class="big-link" href="mailto:luccaprada25@gmail.com">luccaprada25@gmail.com</a><br>
+        <a href="https://github.com/luccahp1">github/luccahp1</a>
+      </p>
+      <ul class="hi-extras">
+        <li>press <kbd>d</kbd> and draw on this page. your scribbles stay — on your copy.</li>
+        <li>hiring? press <kbd>ctrl</kbd>+<kbd>p</kbd>. this whole site quietly prints as my résumé.</li>
+      </ul>
+    </section>
+
+    <!-- ============ footer ============ -->
+    <footer class="foot">
+      <p class="hand foot-read" id="foot-read" hidden>you read the whole thing. that puts you in rare company.</p>
+      <p>made by hand — html, css, js. no frameworks, no templates, one human.</p>
+      <p id="foot-memory" class="mono micro">this site is young. it will remember you from now on.</p>
+      <p class="mono micro">no analytics, no cookies. the only one watching you here is you.
+        everything this site knows lives in <em>your</em> localStorage.</p>
+      <p class="mono micro">
+        <a href="humans.txt">humans.txt</a> ·
+        <button class="linkish mono" id="open-changelog">changelog</button> ·
+        there are secrets on this page. <span class="nowrap">the console knows.</span>
+      </p>
+    </footer>
+  </main>
+
+  <!-- print-only résumé header (the site becomes a résumé when printed) -->
+  <div class="print-only resume-head" aria-hidden="true">
+    <h1>Lucca Prada</h1>
+    <p>Software Developer — luccaprada25@gmail.com — github.com/luccahp1</p>
+    <p>Builds AI-powered products end to end for small service businesses: product, code, and deployment.</p>
+  </div>
+
+  <!-- pencil toggle -->
+  <button class="tool pencil-btn" id="pencil-btn" aria-label="draw on this page (press d)" title="draw on this page (d)">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 20 L5.5 15.5 L16.5 4.5 A 1.6 1.6 0 0 1 19.5 7.5 L8.5 18.5 Z M14.8 6.2 L17.8 9.2"/></svg>
+  </button>
+  <div class="pencil-hud mono" id="pencil-hud" hidden>pencil on — <kbd>esc</kbd> stop · <kbd>z</kbd> undo · <kbd>x</kbd> clear</div>
+
+  <!-- terminal toggle (mostly for touch screens) -->
+  <button class="tool term-btn mono" id="term-btn" aria-label="open the terminal (press /)" title="terminal (/)">›_</button>
+
+  <!-- the terminal -->
+  <div class="term" id="term" role="dialog" aria-modal="true" aria-label="terminal" hidden>
+    <div class="term-body" id="term-body"></div>
+    <div class="term-line">
+      <label class="term-prompt mono" for="term-input">you@luccas-site:~$</label>
+      <input class="term-input mono" id="term-input" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="terminal input">
+    </div>
+  </div>
+
+  <script src="js/main.js" defer></script>
+  <script src="js/ghost.js" defer></script>
+  <script src="js/pencil.js" defer></script>
+  <script src="js/terminal.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,441 @@
+/* ---------------------------------------------------------------
+   lucca's site. paper, ink, one blue pen.
+   handwritten on purpose. viewed best with the lights you prefer.
+   --------------------------------------------------------------- */
+
+:root {
+  --paper: #f7f3ea;
+  --ink: #201c17;
+  --ink-soft: #5f5749;
+  --pen: #2b50c8;          /* ballpoint blue */
+  --pen-soft: rgba(43, 80, 200, 0.55);
+  --red: #c4553d;          /* margin-line red */
+  --line: rgba(32, 28, 23, 0.16);
+  --card: #fbf8f1;
+  --shadow: 0 1px 2px rgba(32, 28, 23, 0.08), 0 6px 18px rgba(32, 28, 23, 0.07);
+  --tape: rgba(224, 205, 155, 0.5);
+  --sel: rgba(43, 80, 200, 0.22);
+}
+
+[data-theme="dark"] {
+  --paper: #141110;
+  --ink: #ece5d6;
+  --ink-soft: #a1988a;
+  --pen: #92a9f5;
+  --pen-soft: rgba(146, 169, 245, 0.6);
+  --red: #d4705c;
+  --line: rgba(236, 229, 214, 0.16);
+  --card: #1b1815;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 22px rgba(0, 0, 0, 0.35);
+  --tape: rgba(203, 178, 122, 0.22);
+  --sel: rgba(146, 169, 245, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --paper: #141110;
+    --ink: #ece5d6;
+    --ink-soft: #a1988a;
+    --pen: #92a9f5;
+    --pen-soft: rgba(146, 169, 245, 0.6);
+    --red: #d4705c;
+    --line: rgba(236, 229, 214, 0.16);
+    --card: #1b1815;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 22px rgba(0, 0, 0, 0.35);
+    --tape: rgba(203, 178, 122, 0.22);
+    --sel: rgba(146, 169, 245, 0.3);
+  }
+}
+
+* { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 1.05rem/1.65 system-ui, -apple-system, "Segoe UI", sans-serif;
+  transition: background-color 0.35s ease, color 0.35s ease;
+  overflow-x: hidden;
+}
+
+/* faint paper grain over everything */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+::selection { background: var(--sel); }
+
+.display { font-family: "Fraunces", Georgia, serif; font-weight: 600; letter-spacing: -0.01em; }
+.hand { font-family: "Caveat", "Segoe Script", cursive; font-size: 1.35rem; line-height: 1.3; color: var(--ink-soft); }
+.mono { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 0.78rem; letter-spacing: 0.01em; }
+.micro { color: var(--ink-soft); }
+.nowrap { white-space: nowrap; }
+
+a { color: var(--pen); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { text-decoration-style: wavy; }
+
+kbd {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.78em;
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 0.05em 0.4em;
+  background: var(--card);
+}
+
+.skip {
+  position: absolute; left: -999px; top: 0.5rem; z-index: 100;
+  background: var(--card); padding: 0.4rem 0.8rem; border-radius: 6px;
+}
+.skip:focus { left: 0.5rem; }
+
+:focus-visible { outline: 2px solid var(--pen); outline-offset: 3px; border-radius: 2px; }
+
+/* ---------- top bar ---------- */
+.top {
+  display: flex; justify-content: space-between; align-items: baseline;
+  max-width: 44rem; margin: 0 auto; padding: 1.4rem 1.4rem 0;
+}
+.wordmark { font-family: "Fraunces", Georgia, serif; font-weight: 600; font-size: 1.05rem; }
+.top-right { color: var(--ink-soft); }
+
+/* ---------- the page column ---------- */
+.page {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 0 1.4rem 4rem;
+  position: relative;
+}
+
+/* notebook margin line, wide screens only */
+@media (min-width: 1150px) {
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0; bottom: 0;
+    left: calc(50% - 25rem);
+    width: 1px;
+    background: var(--red);
+    opacity: 0.25;
+    pointer-events: none;
+  }
+}
+
+section { margin-top: 5rem; position: relative; }
+
+/* ---------- hero ---------- */
+.hero { margin-top: 16vh; min-height: 40vh; }
+.greeting { margin: 0 0 0.6rem; font-size: 1.5rem; }
+h1.display {
+  font-size: clamp(2.1rem, 5.4vw, 3.4rem);
+  line-height: 1.12;
+  margin: 0 0 1.2rem;
+}
+.lede { font-size: 1.15rem; color: var(--ink-soft); max-width: 36rem; }
+
+/* squiggle underline */
+.u { position: relative; white-space: nowrap; }
+.squig {
+  position: absolute; left: 0; right: 0; bottom: -0.18em;
+  width: 100%; height: 0.28em; overflow: visible;
+}
+.squig path {
+  fill: none; stroke: var(--pen); stroke-width: 2.5; stroke-linecap: round;
+  stroke-dasharray: 130; stroke-dashoffset: 130;
+  animation: draw 0.9s 0.5s ease forwards;
+}
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+/* ---------- headings ---------- */
+.h2 { font-size: 1.7rem; margin: 0 0 1.1rem; display: inline-block; position: relative; }
+.h2-aside { font-size: 1.2rem; }
+.h-under {
+  position: absolute; left: -2%; right: -4%; bottom: 0.05em; height: 0.32em;
+  background: var(--pen);
+  opacity: 0.16;
+  transform: rotate(-0.6deg);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* ---------- now ---------- */
+.now-list { padding-left: 1.1rem; margin: 0 0 0.9rem; }
+.now-list li { margin: 0.45rem 0; }
+.now-list li::marker { content: "— "; color: var(--pen); }
+
+.status-line { margin: -0.4rem 0 1.4rem; }
+
+/* ---------- cards ---------- */
+.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem 1.4rem; }
+@media (max-width: 720px) { .cards { grid-template-columns: 1fr; } }
+
+.card {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 1.5rem 1.3rem 1.1rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.35s ease;
+}
+.tilt-a { transform: rotate(-0.5deg); }
+.tilt-b { transform: rotate(0.45deg); }
+.card:hover { transform: rotate(0deg) translateY(-3px); }
+
+.tape {
+  position: absolute; top: -0.6rem; left: 50%;
+  width: 5.2rem; height: 1.25rem;
+  transform: translateX(-50%) rotate(-2deg);
+  background: var(--tape);
+  border-left: 1px dashed rgba(0,0,0,0.08);
+  border-right: 1px dashed rgba(0,0,0,0.08);
+}
+.card h3 { margin: 0 0 0.5rem; font-size: 1.25rem; }
+.card p { margin: 0.5rem 0; font-size: 0.95rem; }
+.stack { color: var(--ink-soft); }
+.card-note { color: var(--ink-soft); font-size: 1.15rem; }
+
+/* ---------- margin notes ---------- */
+.note {
+  font-family: "Caveat", "Segoe Script", cursive;
+  font-size: 1.2rem; line-height: 1.25;
+  color: var(--ink-soft);
+  width: 11rem;
+}
+.arrow { width: 3rem; height: 2rem; display: block; margin-bottom: 0.2rem; }
+.arrow path { fill: none; stroke: var(--ink-soft); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+@media (min-width: 1150px) {
+  .note { position: absolute; }
+  .note-right { right: -14rem; top: 3rem; transform: rotate(1.5deg); }
+  .note-left { left: -14.5rem; top: 6rem; transform: rotate(-1.5deg); text-align: right; }
+  .note-left .arrow { margin-left: auto; }
+}
+@media (max-width: 1149.9px) {
+  .note { margin: 1.2rem 0 0; transform: rotate(-0.5deg); }
+  .arrow { display: none; }
+}
+
+/* ---------- guestbook ---------- */
+.guest-list { list-style: none; padding: 0.2rem 0 0 0.4rem; font-size: 1.3rem; }
+.guest-list li { margin: 0.5rem 0; }
+
+/* ---------- say hi ---------- */
+.big-link { font-family: "Fraunces", Georgia, serif; font-size: 1.5rem; font-weight: 600; }
+.say-hi { line-height: 2.1; }
+.hi-extras { padding-left: 1.1rem; color: var(--ink-soft); font-size: 0.95rem; }
+.hi-extras li { margin: 0.4rem 0; }
+.hi-extras li::marker { content: "✎ "; color: var(--pen); }
+
+/* ---------- footer ---------- */
+.foot { margin-top: 6rem; padding-top: 1.6rem; border-top: 1px solid var(--line); }
+.foot p { margin: 0.5rem 0; }
+.foot-read { font-size: 1.35rem; color: var(--pen); }
+.linkish {
+  background: none; border: none; padding: 0; cursor: pointer;
+  color: var(--pen); text-decoration: underline;
+  text-decoration-thickness: 1px; text-underline-offset: 3px; font-size: inherit;
+}
+.linkish:hover { text-decoration-style: wavy; }
+
+/* ---------- lamp cord ---------- */
+.cord {
+  position: fixed; top: 0; right: clamp(1rem, 6vw, 4rem); z-index: 20;
+  background: none; border: none; padding: 0 6px; cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.cord:active { transform: translateY(9px); }
+.cord-line { stroke: var(--ink-soft); stroke-width: 1.5; }
+.cord-knob { fill: var(--ink-soft); }
+.cord:hover .cord-knob { fill: var(--pen); }
+[data-theme="dark"] .cord-knob { filter: drop-shadow(0 0 6px rgba(146, 169, 245, 0.7)); }
+
+/* ---------- floating tools ---------- */
+.tool {
+  position: fixed; z-index: 20;
+  width: 2.6rem; height: 2.6rem;
+  display: grid; place-items: center;
+  background: var(--card); color: var(--ink-soft);
+  border: 1px solid var(--line); border-radius: 50%;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: color 0.2s, transform 0.2s, background-color 0.35s;
+}
+.tool:hover { color: var(--pen); transform: rotate(-8deg); }
+.pencil-btn { left: 1.1rem; bottom: 1.1rem; }
+.pencil-btn svg path { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
+.pencil-btn.on { color: var(--pen); background: var(--paper); transform: rotate(-35deg); }
+.term-btn { right: 1.1rem; bottom: 1.1rem; font-size: 0.9rem; }
+
+.pencil-hud {
+  position: fixed; left: 4.4rem; bottom: 1.75rem; z-index: 20;
+  color: var(--ink-soft);
+  background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+}
+
+/* the drawing canvas */
+.doodle {
+  position: absolute; top: 0; left: 0; z-index: 3;
+  pointer-events: none;
+}
+body.drawing .doodle { pointer-events: auto; cursor: crosshair; touch-action: none; }
+
+/* ---------- ghost cursor ---------- */
+.ghost {
+  position: absolute; top: 0; left: 0; z-index: 15;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  will-change: transform;
+}
+.ghost.show { opacity: 0.65; }
+.ghost svg { display: block; filter: blur(0.4px) drop-shadow(0 1px 2px rgba(0,0,0,0.25)); }
+.ghost svg path { fill: var(--paper); stroke: var(--ink-soft); stroke-width: 1.3; }
+.ghost-tag {
+  position: absolute; left: 14px; top: 16px;
+  font-family: "Caveat", cursive; font-size: 1.05rem; white-space: nowrap;
+  color: var(--ink-soft);
+  background: var(--card);
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 0 0.6rem;
+}
+.ghost-ping {
+  position: absolute; z-index: 14;
+  width: 8px; height: 8px; border-radius: 50%;
+  border: 2px solid var(--pen-soft);
+  pointer-events: none;
+  animation: ping 0.9s ease-out forwards;
+}
+@keyframes ping { from { transform: scale(0.4); opacity: 0.9; } to { transform: scale(4); opacity: 0; } }
+
+/* ---------- terminal ---------- */
+.term {
+  position: fixed; left: 50%; bottom: 0; z-index: 30;
+  transform: translateX(-50%);
+  width: min(46rem, 100vw);
+  max-height: 55vh;
+  display: flex; flex-direction: column;
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--line); border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.18);
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.85rem;
+}
+.term-body { overflow-y: auto; padding: 1rem 1.1rem 0.4rem; white-space: pre-wrap; line-height: 1.55; }
+.term-body a { color: var(--pen); }
+.term-line { display: flex; gap: 0.5rem; padding: 0.4rem 1.1rem 0.9rem; align-items: baseline; }
+.term-prompt { color: var(--pen); font-size: 0.85rem; }
+.term-input {
+  flex: 1; background: none; border: none; outline: none;
+  color: var(--ink); font-size: 0.85rem; caret-shape: block;
+}
+.term-dim { color: var(--ink-soft); }
+
+/* ---------- blueprint mode (konami) ---------- */
+body.blueprint * { outline: 1px dashed color-mix(in srgb, var(--pen) 30%, transparent); outline-offset: -1px; }
+body.blueprint::before { opacity: 0; }
+body.blueprint {
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 2rem 2rem;
+}
+.bp-note {
+  position: absolute; z-index: 25;
+  font-family: "Caveat", cursive; font-size: 1.05rem;
+  color: var(--pen);
+  background: var(--paper);
+  border: 1px dashed var(--pen-soft);
+  padding: 0 0.5rem; border-radius: 4px;
+  pointer-events: none;
+}
+
+/* toast for little announcements */
+.toast {
+  position: fixed; left: 50%; bottom: 4.4rem; z-index: 40;
+  transform: translateX(-50%);
+  background: var(--ink); color: var(--paper);
+  font-family: "Caveat", cursive; font-size: 1.15rem;
+  padding: 0.35rem 1rem; border-radius: 999px;
+  box-shadow: var(--shadow);
+  opacity: 0; translate: 0 6px;
+  transition: opacity 0.3s, translate 0.3s;
+  pointer-events: none;
+  max-width: min(92vw, 30rem); text-align: center;
+}
+.toast.show { opacity: 1; translate: 0 0; }
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  .squig path { stroke-dashoffset: 0; animation: none; }
+}
+
+/* ---------- small screens ---------- */
+@media (max-width: 720px) {
+  .hero { margin-top: 10vh; }
+  section { margin-top: 3.6rem; }
+  .cord svg { height: 64px; }
+  .top { padding-top: 1.1rem; padding-right: 3.4rem; }
+}
+
+/* ---------------------------------------------------------------
+   print = résumé. ctrl+p turns this page into a normal, serious,
+   entirely presentable document. the site keeps our secret.
+   --------------------------------------------------------------- */
+.print-only { display: none; }
+
+@media print {
+  @page { margin: 1.7cm; }
+
+  :root, [data-theme="dark"] {
+    --paper: #fff; --ink: #111; --ink-soft: #444; --pen: #111;
+    --card: #fff; --line: #bbb; --shadow: none; --tape: transparent; --red: transparent;
+  }
+  body { font-size: 10.5pt; background: #fff; }
+  body::before, body::after { display: none; }
+
+  .cord, .tool, .pencil-hud, .term, .top, .skip, .doodle, .ghost, .ghost-ping,
+  .note, .squig, .h-under, .tape, .toast, .bp-note,
+  #hello, #guestbook, #hi, .foot-read, .hi-extras, .card-note, .status-line,
+  #foot-memory { display: none !important; }
+
+  .print-only.resume-head { display: block; border-bottom: 2px solid #111; margin-bottom: 1rem; padding-bottom: 0.6rem; }
+  .resume-head h1 { margin: 0; font-family: Georgia, serif; font-size: 20pt; }
+  .resume-head p { margin: 0.15rem 0; }
+
+  /* the resume header is authored at the end of <body>; put it first */
+  body { display: flex; flex-direction: column; }
+  .resume-head { order: -1; }
+  .page { order: 1; max-width: none; padding: 0; }
+
+  section { margin-top: 1.1rem; break-inside: avoid; }
+  .h2 { font-size: 12pt; border-bottom: 1px solid #bbb; }
+  .h2::first-letter, .card h3::first-letter, .now-list li::first-letter,
+  .card p::first-letter, #about p::first-letter { text-transform: uppercase; }
+  .cards { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .card { transform: none; border: 1px solid #bbb; padding: 0.7rem 0.8rem; }
+  .card a { display: none; }
+  .foot { margin-top: 1.4rem; padding-top: 0.6rem; }
+  .foot p { display: none; }
+  .foot::after {
+    content: "Full interactive version at this page's URL — it does a few things paper can't.";
+    font-size: 9pt; color: #444;
+  }
+  a { text-decoration: none; color: #111; }
+}
