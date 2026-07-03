@@ -697,6 +697,7 @@
   const padLike = () => wheelSeen >= 5 && wheelSmall / wheelSeen > 0.6;
 
   let speedStart = now();
+  let raceRun = false;        // set by `race` so its finish always celebrates
   let rearmSpeedrun = null;   // the `race` command resets the clock through this
   const foot = $(".foot"), footRead = $("#foot-read");
   if (foot && footRead) {
@@ -704,15 +705,32 @@
     const footEnd = $(".spoilers") || foot;
     let revealed = false;
     let io = null;
+    // your fastest run, kept in localStorage - a real stat, unlike the physics
+    // sliders. the finish shows this best time next to the one you just ran.
+    const fmt = (ms) => (ms / 1000).toFixed(2);
+    const finishLine = (elapsed, isRace) => {
+      const prev = state.raceBest || 0;
+      const isRecord = !prev || elapsed < prev;
+      if (isRecord) { state.raceBest = elapsed; save(); }
+      const lead = isRace
+        ? "race complete - your time: " + fmt(elapsed) + "s. "
+        : "you speedran my website. your time: " + fmt(elapsed) + "s. ";
+      if (isRecord && prev) return lead + "new record, beating your old best of " + fmt(prev) + "s!";
+      if (isRecord)         return lead + "that's your first record - the highscore to beat.";
+      return lead + "your best is still " + fmt(prev) + "s.";
+    };
     const reveal = () => {
       if (revealed) return;
       revealed = true;
       const elapsed = now() - speedStart;
+      const isRace = raceRun;
+      raceRun = false;
       const limit = padLike() ? 15000 : 9000;
-      // under 1.2s isn't a speedrun - that's the browser restoring your scroll
-      if (elapsed > 1200 && elapsed < limit) {
-        footRead.textContent =
-          "you speedran my website. bottom in " + (elapsed / 1000).toFixed(2) + "s. record pace.";
+      // a race always celebrates, whatever the time; a passive run only when
+      // it's plausibly a speedrun - over ~1.2s (not the browser restoring
+      // scroll) and under the window (not someone actually reading)
+      if (isRace || (elapsed > 1200 && elapsed < limit)) {
+        footRead.textContent = finishLine(elapsed, isRace);
         confetti();
       }
       footRead.hidden = false;
@@ -786,6 +804,7 @@
       blip(1040);
       unlock();                 // the page is yours again
       rearmSpeedrun?.();        // and the clock starts NOW
+      raceRun = true;           // whatever their time, the finish gets confetti
       banner.classList.add("done");
       setTimeout(() => { banner.remove(); racing = false; }, 900);
     }, 1000);

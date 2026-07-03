@@ -78,7 +78,7 @@
       "konami     blueprints\n" +
       "ctrl+p     the résumé trick\n" +
       "call me x  the site learns your name\n" +
-      "race       a checkered flag, for people in a hurry\n" +
+      "race       a checkered flag, for people in a hurry. it remembers your best\n" +
       "physics    sliders for the lamp cord. play god, nothing saves\n" +
       "lucca.*    the console api\n" +
       "hover      the name up top. the coffee in the margin. things react.\n" +
@@ -93,8 +93,9 @@
     "v1.5 - jul 3 2026 - the cord now snaps twice. the second time gets duct",
     "        tape, a real wall switch, and a `rewire` command to earn the",
     "        string back. new toys: `race` (checkered-flag countdown for",
-    "        speedrunners - trackpads get a fair clock) and `physics` (live",
-    "        sliders for the rope, never saved). the snap flicker is actually",
+    "        speedrunners, with confetti and a saved highscore - trackpads get",
+    "        a fair clock) and `physics` (live sliders for the rope, never",
+    "        saved). the snap flicker is actually",
     "        visible now, toasts linger longer and land beside the lamp, the",
     "        tape has more feelings, the coffee steams, the header name knows",
     "        it isn't a handbag, and `forget` finally forgets. oops.",
@@ -138,7 +139,7 @@
       line("  ghost           - replays a previous visitor");
       line("  draw            - pencil mode. `d` works too");
       line("  blueprint       - shows the construction lines");
-      line("  race            - checkered flag, three seconds, GO. for speedrunners");
+      line("  race            - checkered flag, three seconds, GO. clocks your best time");
       line("  physics         - live sliders for the cord. nothing saves, go nuts");
       line("  changelog       - what changed and when");
       line("  vouch           - the guestbook, grown up");
@@ -156,6 +157,7 @@
       else line("name: unknown. fixable - try: call me maple", "term-dim");
       line("first seen: " + rel(Date.now() - state.firstVisit) + " ago · visits: " + state.visits);
       if (state.spoiled) line("read the spoilers: yes. no judgment. (some judgment.)", "term-dim");
+      if (state.raceBest) line("fastest race: " + (state.raceBest / 1000).toFixed(2) + "s (your highscore)", "term-dim");
       if (state.vouched) line("vouched: yes. legend.", "term-dim");
       if (state.prankRm) line("permanent record: attempted `rm -rf /` once. we remember.", "term-dim");
       line("everything above lives in your localStorage, not on a server.", "term-dim");
