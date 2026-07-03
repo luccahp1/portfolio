@@ -7,7 +7,8 @@
 - No backend, no build step. Visitor data stays in their localStorage.
 
 ## Next steps
-- Deploy to luccaserver (nginx static root) or GitHub Pages, and point a domain at it.
+- Deployed to GitHub Pages: https://luccahp1.github.io/portfolio/ (repo public, Pages on main/root).
+- Optional: point a custom domain at it (update the two hardcoded URLs in `404.html` if so).
 - Replace "somewhere north enough" with a real location if Lucca wants one.
 - Add real guestbook entries as they arrive by email (hand-edit `#guestbook` list).
 - Optional: wire `uptime`'s "closet server" line to a real health endpoint on luccaserver.

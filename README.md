@@ -2,6 +2,8 @@
 
 Lucca Prada's personal portfolio site. Hand-written HTML, CSS, and JavaScript — no framework, no build step, no dependencies.
 
+**Live:** https://luccahp1.github.io/portfolio/
+
 The concept: **a site that remembers you.** Everything it knows lives in the visitor's own localStorage; there is no backend and no analytics.
 
 ## Features
