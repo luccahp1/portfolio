@@ -1,5 +1,5 @@
 /* the pencil. press d, draw on the page, and the page keeps it.
-   your doodles live in your browser — this is your copy of the site. */
+   your doodles live in your browser - this is your copy of the site. */
 
 (function () {
   const site = window.__site;
@@ -157,7 +157,7 @@
       if (!state.penciled) {
         state.penciled = true;
         save();
-        toast("pencil on. the page is yours — it keeps what you draw.", 3600, { el: btn, fixed: true, dy: -44, ax: 1, shift: "-20%" });
+        toast("pencil on. the page is yours - it keeps what you draw.", 3600, { el: btn, fixed: true, dy: -44, ax: 1, shift: "-20%" });
       }
     }
   }

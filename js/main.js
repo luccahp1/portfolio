@@ -47,7 +47,7 @@
   }
 
   let toastEl, toastTimer;
-  // toast(msg, ms, at) — pass at = { el, fixed?, ax?, dy?, shift? } and the note
+  // toast(msg, ms, at) - pass at = { el, fixed?, ax?, dy?, shift? } and the note
   // appears near where the thing actually happened, slightly crooked on purpose.
   function toast(msg, ms = 3200, at) {
     if (!toastEl) {
@@ -96,8 +96,8 @@
     if (d.getMonth() === 6 && d.getDate() === 2) {
       const age = d.getFullYear() - BORN.getFullYear();
       return age < 1
-        ? "it's this site's birthday. born today, actually. no gifts — a vouch, maybe."
-        : "it's this site's birthday — " + age + " today. no gifts. vouches accepted.";
+        ? "it's this site's birthday. born today, actually. no gifts - a vouch, maybe."
+        : "it's this site's birthday - " + age + " today. no gifts. vouches accepted.";
     }
 
     if (fresh || v === 1) {
@@ -111,8 +111,8 @@
       if (v <= 4) return "welcome back, " + name + ".";
       return name + "! visit #" + v + ". the locker's still yours.";
     }
-    if (late) return "back again — and at this hour. respect.";
-    if (v === 2) return "oh — you came back. hi again.";
+    if (late) return "back again - and at this hour. respect.";
+    if (v === 2) return "oh - you came back. hi again.";
     if (v <= 4) return "welcome back. visit #" + v + ".";
     if (v <= 9) return "visit #" + v + ". you basically have a locker here now.";
     return "visit #" + v + ". should i just give you a key?";
@@ -232,38 +232,186 @@
   // lamp commentary happens at the lamp, not across the room
   const cordAt = () => ({ el: cordBtn, fixed: true, dy: 104, shift: "-78%" });
 
-  // the cord idles with a tiny sway. bat it back and forth — consecutive
-  // passes hit harder, and it takes a while to calm back down.
-  let swingM = 0, swingTimer, lastEnter = 0;
-  function setSwing() {
-    if (!cordBtn) return;
-    const amp = Math.min(1.1 + swingM * 3.2, 24);
-    const spd = Math.max(1.8 - swingM * 0.14, 0.65);
-    cordBtn.style.setProperty("--amp", amp.toFixed(1) + "deg");
-    cordBtn.style.setProperty("--spd", spd.toFixed(2) + "s");
+  // the cord is a real rope now: a chain of verlet nodes under gravity,
+  // with hooke's-law-ish distance constraints holding it together.
+  // it hangs perfectly still (zero cpu) until the mouse gets close - only
+  // then does the physics loop wake up, and it naps again once the cord
+  // settles. grab it and pull in any direction: it stretches, and past
+  // enough tension the switch gives and the lights flip. swiping through
+  // it shoves whichever nodes you graze.
+  const cordSvg = cordBtn?.querySelector("svg");
+  const cordPathEl = $("#cord-path");
+  const cordKnobEl = $("#cord-knob");
+  const SEGS = 9, REST = 70 / SEGS;   // 70px of cord, same as it ever was
+  const GRAV = 2600;                  // px/s^2 in svg space
+  const DAMPING = 0.985;              // air resistance: F_d = -c*v, folded into verlet
+  const WAKE_R = 160;                 // physics doesn't exist until you're this close
+  const BRUSH_R = 16;                 // a swipe this near a node shoves it
+  const STRETCH_PX = 28;              // the most the cord will stretch past natural
+  const PULL_PX = 16;                 // stretch where the switch gives
+  let nodes = [];
+  let ropeEnd = SEGS;                 // last live node (shrinks when snapped)
+  let ropeRunning = false, ropeCalm = 0, ropeT = 0;
+  let grab = null;                    // { i, cx, cy, x0, y0, t0, fired }
+  let mCX = -1e4, mCY = -1e4, mVX = 0, mVY = 0, mT = 0;
+  let svgRect = null;
+
+  function ropeRect() {
+    if (!svgRect) svgRect = cordSvg.getBoundingClientRect();
+    return svgRect;
   }
-  function nudgeSwing(strength) {
-    if (prefersReduced) return;
-    swingM = Math.min(swingM + strength, 7);
-    setSwing();
-    clearInterval(swingTimer);
-    swingTimer = setInterval(() => {
-      swingM *= 0.72;
-      if (swingM < 0.15) { swingM = 0; clearInterval(swingTimer); }
-      setSwing();
-    }, 700);
+  addEventListener("resize", () => { svgRect = null; });
+  function toLocal(cx, cy) {
+    const r = ropeRect();
+    return { x: (cx - r.left) * (24 / r.width), y: (cy - r.top) * (90 / r.height) };
   }
-  setSwing();
-  cordBtn?.addEventListener("pointerenter", () => {
-    const t = now();
-    nudgeSwing(t - lastEnter < 2500 ? 1.6 : 0.7);
-    lastEnter = t;
-  });
+  function ropeReset() {
+    nodes = [];
+    for (let i = 0; i <= SEGS; i++) nodes.push({ x: 12, y: i * REST, px: 12, py: i * REST });
+    ropeRender();
+  }
+  function ropeRender() {
+    let d = "M12 0";
+    for (let i = 1; i <= ropeEnd; i++) d += " L" + nodes[i].x.toFixed(1) + " " + nodes[i].y.toFixed(1);
+    cordPathEl.setAttribute("d", d);
+    // the knob rides just past the last node, along the cord's direction
+    const e = nodes[ropeEnd], p = nodes[ropeEnd - 1];
+    const dx = e.x - p.x, dy = e.y - p.y, len = Math.hypot(dx, dy) || 1;
+    cordKnobEl.setAttribute("cx", (e.x + (dx / len) * 6).toFixed(1));
+    cordKnobEl.setAttribute("cy", (e.y + (dy / len) * 6).toFixed(1));
+  }
+
+  function ropeStep(dt) {
+    // verlet: x_new = x + (x - x_prev)*damping + a*dt^2
+    const g = GRAV * dt * dt;
+    for (let i = 1; i <= ropeEnd; i++) {
+      const n = nodes[i];
+      const vx = (n.x - n.px) * DAMPING, vy = (n.y - n.py) * DAMPING;
+      n.px = n.x; n.py = n.y;
+      n.x += vx; n.y += vy + g;
+    }
+    // a swipe near the cord shoves the nodes it grazes (force ∝ mouse velocity)
+    if (!grab && mVX * mVX + mVY * mVY > 1) {
+      const m = toLocal(mCX, mCY);
+      for (let i = 1; i <= ropeEnd; i++) {
+        const n = nodes[i];
+        if (Math.hypot(n.x - m.x, n.y - m.y) < BRUSH_R) {
+          n.px -= Math.max(-14, Math.min(14, mVX * dt * 0.6));
+          n.py -= Math.max(-14, Math.min(14, mVY * dt * 0.6));
+        }
+      }
+    }
+    // the grabbed node follows the pointer, clamped to max stretch;
+    // tension = how far past the held section's natural length you've pulled
+    if (grab) {
+      const m = toLocal(grab.cx, grab.cy);
+      const natural = grab.i * REST;
+      let dx = m.x - 12, dy = m.y;
+      const dist = Math.hypot(dx, dy), max = natural + STRETCH_PX;
+      if (dist > max) { dx *= max / dist; dy *= max / dist; }
+      const n = nodes[grab.i];
+      n.x = 12 + dx; n.y = dy; n.px = n.x; n.py = n.y;
+      if (!grab.fired && dist - natural > PULL_PX) {
+        grab.fired = true;
+        endGrab(true);   // the switch gives: lights flip, knob slips free
+      }
+    }
+    // distance constraints, a few relaxation passes. while held, over-long
+    // segments only correct partway - that's the stretch you feel.
+    for (let k = 0; k < 4; k++) {
+      for (let i = 0; i < ropeEnd; i++) {
+        const a = nodes[i], b = nodes[i + 1];
+        let dx = b.x - a.x, dy = b.y - a.y;
+        const d = Math.hypot(dx, dy) || 1e-6;
+        let diff = (d - REST) / d;
+        if (grab && diff > 0) diff *= 0.55;
+        const ox = dx * diff, oy = dy * diff;
+        const aPin = i === 0 || (grab && i === grab.i);
+        const bPin = grab && i + 1 === grab.i;
+        if (aPin && bPin) continue;
+        if (aPin) { b.x -= ox; b.y -= oy; }
+        else if (bPin) { a.x += ox; a.y += oy; }
+        else { a.x += ox * 0.5; a.y += oy * 0.5; b.x -= ox * 0.5; b.y -= oy * 0.5; }
+      }
+    }
+  }
+
+  function ropeEnergy() {
+    let e = 0;
+    for (let i = 1; i <= ropeEnd; i++) e += Math.abs(nodes[i].x - nodes[i].px) + Math.abs(nodes[i].y - nodes[i].py);
+    return e;
+  }
+  function mouseNearCord() {
+    const r = ropeRect();
+    return Math.hypot(mCX - (r.left + r.width / 2), mCY - (r.top + r.height * 0.7)) < WAKE_R;
+  }
+  function ropeWake() {
+    if (ropeRunning || prefersReduced || !cordSvg) return;
+    ropeRunning = true; ropeCalm = 0; ropeT = performance.now();
+    requestAnimationFrame(ropeLoop);
+  }
+  function ropeLoop(t) {
+    if (!ropeRunning) return;
+    const dt = Math.min(0.033, (t - ropeT) / 1000 || 0.016);
+    ropeT = t;
+    ropeStep(dt / 2); ropeStep(dt / 2);   // two substeps keep the springs stable
+    ropeRender();
+    // nap once the cord has settled and you've wandered off
+    if (!grab && !mouseNearCord() && ropeEnergy() < 0.3) {
+      if (++ropeCalm > 40) { ropeRunning = false; ropeReset(); return; }
+    } else ropeCalm = 0;
+    requestAnimationFrame(ropeLoop);
+  }
+
+  function endGrab(byTension) {
+    if (!grab) return;
+    const g = grab;
+    grab = null;
+    if (byTension) pullCord();
+    // a plain tap (no real drag) still just toggles, like a normal button
+    else if (Math.hypot(g.cx - g.x0, g.cy - g.y0) < 7 && now() - g.t0 < 400) pullCord();
+  }
+
+  if (cordSvg && cordPathEl && cordKnobEl) {
+    ropeReset();
+    addEventListener("pointermove", (e) => {
+      const t = performance.now();
+      const dtm = Math.min(64, t - mT) || 16;
+      const r = ropeRect();
+      // mouse velocity in svg px/s, for the brush force
+      mVX = ((e.clientX - mCX) * (24 / r.width) / dtm) * 1000;
+      mVY = ((e.clientY - mCY) * (90 / r.height) / dtm) * 1000;
+      mCX = e.clientX; mCY = e.clientY; mT = t;
+      if (grab) { grab.cx = e.clientX; grab.cy = e.clientY; }
+      // the optimization: the physics only runs when you're near the cord
+      if (mouseNearCord()) ropeWake();
+    }, { passive: true });
+    addEventListener("pointerup", () => endGrab(false));
+    addEventListener("pointercancel", () => { grab = null; });
+    cordBtn.addEventListener("pointerdown", (e) => {
+      if (cordSnapped) return;
+      const m = toLocal(e.clientX, e.clientY);
+      // grab whichever node is under your finger (never right at the anchor)
+      let gi = ropeEnd, best = 1e9;
+      for (let i = 2; i <= ropeEnd; i++) {
+        const d = Math.hypot(nodes[i].x - m.x, nodes[i].y - m.y);
+        if (d < best) { best = d; gi = i; }
+      }
+      grab = { i: gi, cx: e.clientX, cy: e.clientY, x0: e.clientX, y0: e.clientY, t0: now(), fired: false };
+      mCX = e.clientX; mCY = e.clientY;
+      ropeWake();
+      e.preventDefault();
+    });
+    // keyboard "clicks" (enter/space) arrive with detail 0; pointer taps are
+    // handled by the grab logic above, so this never double-fires
+    cordBtn.addEventListener("click", (e) => { if (e.detail === 0) pullCord(); });
+  }
 
   function snapCord() {
     cordSnapped = true;
-    swingM = 0;
-    setSwing();
+    grab = null;
+    ropeEnd = 3;   // a sad little stub stays behind
+    ropeRender();
     crack();
     const r = cordBtn.getBoundingClientRect();
     sparks(r.left + r.width / 2, r.top + 10);
@@ -289,13 +437,18 @@
       cordPulls = [];
       cordBtn.classList.remove("snapped");
       cordBtn.classList.add("repaired");   // the tape stays. a reminder.
+      ropeEnd = SEGS;
+      ropeReset();
       toast("fixed it. that was my last cord, so.", 3800, cordAt());
     }, 9000);
   }
 
   function pullCord() {
     if (cordSnapped) return;
-    nudgeSwing(1.2);   // a yank counts as a shove
+    if (!prefersReduced && nodes.length) {
+      nodes[ropeEnd].py -= 10;   // a yank counts as a shove
+      ropeWake();
+    }
     setTheme(currentTheme() === "dark" ? "light" : "dark");
     if (!state.cordPulled) {
       state.cordPulled = true;
@@ -312,7 +465,6 @@
       snapCord();
     }
   }
-  cordBtn?.addEventListener("click", pullCord);
 
   /* ---------- tab title misses you (the favicon takes a nap) ---------- */
   const realTitle = document.title;
@@ -354,7 +506,7 @@
       if (revealed) return;
       revealed = true;
       const elapsed = now() - loadedAt;
-      // under 1.2s isn't a speedrun — that's the browser restoring your scroll
+      // under 1.2s isn't a speedrun - that's the browser restoring your scroll
       if (elapsed > 1200 && elapsed < 9000) {
         footRead.textContent =
           "you speedran my website. bottom in " + (elapsed / 1000).toFixed(2) + "s. record pace.";
@@ -403,7 +555,7 @@
   let seqAt = 0;
   const BP_NOTES = [
     { sel: "#hello h1", text: "44rem column. trust me.", dx: 10, dy: -34 },
-    { sel: "#outpace", text: "rotate(-0.5deg) — barely, but you feel it", dx: 0, dy: -30 },
+    { sel: "#outpace", text: "rotate(-0.5deg) - barely, but you feel it", dx: 0, dy: -30 },
     { sel: ".tape", text: "the tape is one rectangle and a dream", dx: 60, dy: -6 },
     { sel: "#guestbook-h", text: "vouch backend: my inbox. verification: my eyeballs", dx: 180, dy: 4 },
     { sel: ".foot", text: "the ghost you saw was real. well. local.", dx: 10, dy: -26 },
@@ -449,7 +601,7 @@
     const r = t.getBoundingClientRect();
     const cls = typeof t.className === "string" && t.className.split(" ")[0];
     bpLive.textContent =
-      t.tagName.toLowerCase() + (cls ? "." + cls : "") + " — " +
+      t.tagName.toLowerCase() + (cls ? "." + cls : "") + " - " +
       Math.round(r.width) + " × " + Math.round(r.height) + " px";
     bpLive.style.left = Math.min(innerWidth - 190, e.clientX + 14) + "px";
     bpLive.style.top = e.clientY + 18 + "px";
@@ -466,7 +618,7 @@
       bpPlace();
       bpLive = document.createElement("div");
       bpLive.id = "bp-live";
-      bpLive.textContent = "hover anything — it will confess its size";
+      bpLive.textContent = "hover anything - it will confess its size";
       document.body.appendChild(bpLive);
       addEventListener("pointermove", bpMeasure, { passive: true });
       const lines = [
@@ -500,7 +652,7 @@
     "  ctrl+p       → the whole site prints as my résumé.\n" +
     "  lucca.*      → yes, there's an api. try lucca.ghost()\n\n" +
     "or press the spoiler button at the very bottom like a quitter.\n" +
-    "source: https://github.com/luccahp1/portfolio — handwritten, ghosts included.", css2
+    "source: https://github.com/luccahp1/portfolio - handwritten, ghosts included.", css2
   );
 
   /* ---------- small acknowledgments (each fires once, politely) ---------- */
@@ -558,7 +710,7 @@
       const opening = spPanel.hidden;
       spPanel.hidden = !opening;
       spBtn.setAttribute("aria-expanded", String(opening));
-      spBtn.textContent = opening ? "ok, hide them again" : "ok fine — reveal every secret";
+      spBtn.textContent = opening ? "ok, hide them again" : "ok fine - reveal every secret";
       if (opening) {
         spPanel.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "nearest" });
         if (!state.spoiled) {

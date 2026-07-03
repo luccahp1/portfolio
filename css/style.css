@@ -172,7 +172,7 @@ h1.display {
 /* ---------- now ---------- */
 .now-list { padding-left: 1.1rem; margin: 0 0 0.9rem; }
 .now-list li { margin: 0.45rem 0; }
-.now-list li::marker { content: "— "; color: var(--pen); }
+.now-list li::marker { content: "- "; color: var(--pen); }
 
 .status-line { margin: -0.4rem 0 1.4rem; }
 
@@ -252,11 +252,11 @@ h1.display {
 /* ---------- lamp cord ---------- */
 .cord {
   position: fixed; top: 0; right: clamp(1rem, 6vw, 4rem); z-index: 20;
-  background: none; border: none; padding: 0 6px; cursor: pointer;
-  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: none; border: none; padding: 0 6px; cursor: grab;
+  touch-action: none;
 }
-.cord:active { transform: translateY(9px); }
-.cord-line { stroke: var(--ink-soft); stroke-width: 1.5; }
+.cord:active { cursor: grabbing; }
+.cord-line { stroke: var(--ink-soft); stroke-width: 1.5; fill: none; }
 .cord-knob { fill: var(--ink-soft); }
 .cord:hover .cord-knob { fill: var(--pen); }
 [data-theme="dark"] .cord-knob { filter: drop-shadow(0 0 6px rgba(146, 169, 245, 0.7)); }
@@ -486,16 +486,9 @@ body.blueprint {
 .v-role-note { margin: 0.9rem 0 -0.4rem; font-size: 1.15rem; color: var(--pen); transform: rotate(-0.6deg); }
 .v-actions { display: flex; gap: 1rem; align-items: center; margin-top: 1.4rem; }
 
-/* the cord is never quite still — and it remembers being batted around.
-   --amp and --spd are set from js: each consecutive hover-pass adds momentum. */
-.cord svg {
-  transform-origin: 12px 0;
-  animation: cordswing var(--spd, 1.8s) ease-in-out infinite;
-}
-@keyframes cordswing {
-  0%, 100% { rotate: calc(-1 * var(--amp, 1.1deg)); }
-  50% { rotate: var(--amp, 1.1deg); }
-}
+/* the cord is a real rope now - verlet nodes, drawn every frame from js.
+   overflow stays visible so it can swing and stretch past its little box. */
+.cord svg { overflow: visible; }
 
 /* about's seasonal margin note sits lower than coffee */
 @media (min-width: 1150px) {
@@ -528,7 +521,6 @@ body.blueprint {
 
 /* ---------- the cord can only take so much ---------- */
 .cord.snapped { pointer-events: none; }
-.cord.snapped svg { clip-path: inset(0 0 72% 0); animation: none; }
 .cord.repaired::after {
   content: "";
   position: absolute;
@@ -650,15 +642,17 @@ body.blueprint {
 }
 .toast.show { opacity: 1; translate: 0 0; }
 /* anchored toasts drop the pill and become handwriting at the scene,
-   with a paper halo so they stay readable over anything */
+   on a translucent paper slip so they stay readable over anything */
 .toast.anchored {
-  background: none;
+  background: color-mix(in srgb, var(--paper) 82%, transparent);
+  backdrop-filter: blur(2px);
   color: var(--ink);
   box-shadow: none;
-  border-radius: 0;
-  padding: 0;
+  border-radius: 8px;
+  padding: 0.15rem 0.6rem;
   font-size: 1.4rem;
   line-height: 1.15;
+  width: max-content;
   max-width: 16rem;
   z-index: 46;
   text-shadow:

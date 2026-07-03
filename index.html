@@ -7,7 +7,7 @@
      |    |   ascii is harder than it looks.
       \__/
 
-  everything in here is handwritten. no build step, no framework —
+  everything in here is handwritten. no build step, no framework -
   what you see is what i typed. there's a spoiler button at the very
   bottom of the page that lists every secret, but honestly?
   `cat secrets.txt` in the terminal (press /) hits different.
@@ -23,7 +23,7 @@
   <meta name="author" content="Lucca Prada">
   <link rel="icon" href="favicon.svg" type="image/svg+xml" id="favicon">
   <link rel="author" href="humans.txt">
-  <title>lucca prada — small software, made by hand</title>
+  <title>lucca prada - small software, made by hand</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,11 +34,11 @@
 <body>
   <a class="skip" href="#main">skip to content</a>
 
-  <!-- the lamp cord. pull it. -->
+  <!-- the lamp cord. grab it, pull it, any direction. it stretches. -->
   <button class="cord" id="cord" aria-label="toggle the lights" title="the lights">
     <svg viewBox="0 0 24 90" width="24" height="90" aria-hidden="true">
-      <line x1="12" y1="0" x2="12" y2="70" class="cord-line"/>
-      <circle cx="12" cy="76" r="6" class="cord-knob"/>
+      <path id="cord-path" class="cord-line" d="M12 0 L12 70" fill="none"/>
+      <circle id="cord-knob" cx="12" cy="76" r="6" class="cord-knob"/>
     </svg>
   </button>
 
@@ -69,11 +69,11 @@
     <section id="now" aria-labelledby="now-h">
       <h2 id="now-h" class="display h2">now<span class="h-under" aria-hidden="true"></span></h2>
       <ul class="now-list">
-        <li>building <strong>atrio</strong> and <strong>outpace</strong> — two ai tools for small service businesses</li>
+        <li>building <strong>atrio</strong> and <strong>outpace</strong> - two ai tools for small service businesses</li>
         <li>pitching them to a real <span class="tip" tabindex="0" data-tip="canadian for rain gutters. we are a proud people.">eavestroughs</span> company. a live call. no slides, just the working thing</li>
         <li>keeping the server in my closet fed and warm</li>
       </ul>
-      <p class="mono micro">last updated jul 3, 2026 — by hand, like everything here</p>
+      <p class="mono micro">last updated jul 3, 2026 - by hand, like everything here</p>
     </section>
 
     <!-- ============ work ============ -->
@@ -86,7 +86,7 @@
           <span class="tape" aria-hidden="true"></span>
           <h3 class="display">outpace</h3>
           <p>answers a business's new leads in minutes, in the owner's own voice, and follows up
-          until a human replies. built for trades that leak leads on nights and weekends —
+          until a human replies. built for trades that leak leads on nights and weekends -
           because the first company to answer usually wins the job.</p>
           <p class="mono stack">next.js · claude · turso</p>
           <p class="hand card-note">the hard part wasn't the ai. it was teaching it to be polite about following up.</p>
@@ -113,7 +113,7 @@
         <article class="card tilt-b" id="site">
           <span class="tape" aria-hidden="true"></span>
           <h3 class="display">this site</h3>
-          <p>the thing you're reading. html, css and javascript written by hand — no framework,
+          <p>the thing you're reading. html, css and javascript written by hand - no framework,
           no template, no build step. it remembers your visits, keeps your doodles, and haunts
           you with your own cursor. all of it stays in <em>your</em> browser.</p>
           <p class="mono stack">html · css · js · nothing else</p>
@@ -131,7 +131,7 @@
     <!-- ============ about ============ -->
     <section id="about" aria-labelledby="about-h">
       <h2 id="about-h" class="display h2">about<span class="h-under" aria-hidden="true"></span></h2>
-      <p>i like owning the whole thing — the pitch, the code, the deploy, the 2am when it breaks.
+      <p>i like owning the whole thing - the pitch, the code, the deploy, the 2am when it breaks.
       i build with ai every day, and i still think software should feel like a person made it.
       that's the whole philosophy, really: small tools, real businesses, fingerprints left on.</p>
       <p>i live somewhere north enough that "<span class="tip" tabindex="0" data-tip="canadian for rain gutters. we are a proud people.">eavestroughs</span>" is a normal word.</p>
@@ -142,14 +142,14 @@
     <!-- ============ vouches (the guestbook grew up) ============ -->
     <section id="guestbook" aria-labelledby="guestbook-h">
       <h2 id="guestbook-h" class="display h2">vouches <span class="hand h2-aside">(verified by hand)</span><span class="h-under" aria-hidden="true"></span></h2>
-      <p>if something here made you smile — or you've actually worked with me — you can vouch
+      <p>if something here made you smile - or you've actually worked with me - you can vouch
       for me. twenty seconds, four questions, two of them optional. no database: the card
       drafts an email in <em>your</em> mail app, i read every one, and then i hand-type it
       below. that's the verification process. it has never been hacked.</p>
       <p><button class="vouch-btn hand" id="vouch-btn">i'd vouch for this guy →</button></p>
       <ul class="guest-list hand" id="vouch-list">
-        <!-- vouches get added here by hand: name — company/role — one good line. -->
-        <li>— nobody yet. the html is ready when you are.</li>
+        <!-- vouches get added here by hand: name - company/role - one good line. -->
+        <li>- nobody yet. the html is ready when you are.</li>
       </ul>
     </section>
 
@@ -161,16 +161,16 @@
         <a href="https://github.com/luccahp1">github/luccahp1</a>
       </p>
       <ul class="hi-extras">
-        <li>press <kbd>d</kbd> and draw on this page. your scribbles stay — on your copy.</li>
+        <li>press <kbd>d</kbd> and draw on this page. your scribbles stay - on your copy.</li>
         <li>hiring? press <kbd>ctrl</kbd>+<kbd>p</kbd>. this whole site quietly prints as my résumé.</li>
-        <li>prefer it on a normal page? <a href="resume.html">the formal résumé</a> — same one, capital letters included.</li>
+        <li>prefer it on a normal page? <a href="resume.html">the formal résumé</a> - same one, capital letters included.</li>
       </ul>
     </section>
 
     <!-- ============ footer ============ -->
     <footer class="foot">
       <p class="hand foot-read" id="foot-read" hidden>you read the whole thing. that puts you in rare company.</p>
-      <p>made by hand — html, css, js. no frameworks, no templates, one human.</p>
+      <p>made by hand - html, css, js. no frameworks, no templates, one human.</p>
       <p id="foot-memory" class="mono micro">this site is young. it will remember you from now on.</p>
       <p class="mono micro">no analytics, no cookies. the only one watching you here is you.
         everything this site knows lives in <em>your</em> localStorage.</p>
@@ -183,26 +183,26 @@
       <!-- the spoilers. hand-maintained, like everything. -->
       <div class="spoilers">
         <button class="spoiler-btn hand" id="spoiler-btn" aria-expanded="false" aria-controls="spoiler-panel">
-          ok fine — reveal every secret
+          ok fine - reveal every secret
         </button>
         <div class="spoiler-panel" id="spoiler-panel" hidden>
           <span class="tape" aria-hidden="true"></span>
           <p class="hand spoiler-title">the complete map of secrets. last chance to find them yourself.</p>
           <ul class="spoiler-list">
-            <li><strong>the ghost</strong> — this site records your cursor (locally, never sent anywhere). come back tomorrow and watch yourself drift by, labeled "you, 1 day ago". first visit? you got mine instead. summon one anytime: type <kbd>ghost</kbd> in the terminal.</li>
-            <li><strong>the pencil</strong> — press <kbd>d</kbd>, then draw anywhere. <kbd>c</kbd> changes ink, <kbd>z</kbd> undoes, <kbd>x</kbd> erases everything, <kbd>esc</kbd> puts it down. your art survives reloads.</li>
-            <li><strong>the terminal</strong> — press <kbd>/</kbd>. start with <code>help</code>, snoop with <code>cat secrets.txt</code>, finish with <code>sudo hire lucca</code>. (<code>rm -rf</code> goes on your permanent record. permanently.)</li>
-            <li><strong>tell it your name</strong> — in the terminal: <code>call me maple</code>. the site greets you by name forever after. <code>lucca.forget()</code> if you regret everything.</li>
-            <li><strong>blueprint mode</strong> — <kbd>↑</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd><kbd>←</kbd><kbd>→</kbd><kbd>b</kbd><kbd>a</kbd>. the site shows its bones — every box confesses its pixels, and whatever you hover gets measured live. do it twice, it gets chattier.</li>
-            <li><strong>the résumé trick</strong> — <kbd>ctrl</kbd>+<kbd>p</kbd>. the lowercase disappears and paper gets my real, serious, one-page résumé. also lives at <a href="resume.html">resume.html</a>.</li>
-            <li><strong>the lamp</strong> — the cord hanging top-right. pull for lights. it clicks. pull it four times fast and it has opinions. ignore the warning and keep yanking… it snaps. sparks, flicker, the works. (i fix it. eventually. the repair tape stays.)</li>
-            <li><strong>the tape</strong> — it's holding the project cards up. grab one and pull it off. the card falls, and a very small lucca comes to pin it back with a real thumbtack — a different pin, spot, and angle every time. he does not use a level.</li>
-            <li><strong>the vouch card</strong> — the button in the vouches section. typing a company summons a bonus question out of thin air. that's not a bug, that's logic.</li>
-            <li><strong>leave &amp; come back</strong> — the tab title misses you, and the favicon lies down for a nap while you're gone.</li>
-            <li><strong>the ending changes</strong> — speedrun to the bottom and the footer clocks your official time, with confetti. read slowly and it thanks you properly.</li>
-            <li><strong>small acknowledgments</strong> — copy some text. select all. go idle for a minute. hover the word "eavestroughs". the site notices things, politely, once.</li>
-            <li><strong>the console</strong> — open devtools. there's a note waiting, and an api: <code>lucca.ghost()</code>, <code>lucca.lights()</code>, <code>lucca.blueprint()</code>, <code>lucca.forget()</code>.</li>
-            <li><strong>for completionists</strong> — <a href="humans.txt">humans.txt</a>, the 404 page (make up a url), and a note at the top of view-source.</li>
+            <li><strong>the ghost</strong> - this site records your cursor (locally, never sent anywhere). come back tomorrow and watch yourself drift by, labeled "you, 1 day ago". first visit? you got mine instead. summon one anytime: type <kbd>ghost</kbd> in the terminal.</li>
+            <li><strong>the pencil</strong> - press <kbd>d</kbd>, then draw anywhere. <kbd>c</kbd> changes ink, <kbd>z</kbd> undoes, <kbd>x</kbd> erases everything, <kbd>esc</kbd> puts it down. your art survives reloads.</li>
+            <li><strong>the terminal</strong> - press <kbd>/</kbd>. start with <code>help</code>, snoop with <code>cat secrets.txt</code>, finish with <code>sudo hire lucca</code>. (<code>rm -rf</code> goes on your permanent record. permanently.)</li>
+            <li><strong>tell it your name</strong> - in the terminal: <code>call me maple</code>. the site greets you by name forever after. <code>lucca.forget()</code> if you regret everything.</li>
+            <li><strong>blueprint mode</strong> - <kbd>↑</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd><kbd>←</kbd><kbd>→</kbd><kbd>b</kbd><kbd>a</kbd>. the site shows its bones - every box confesses its pixels, and whatever you hover gets measured live. do it twice, it gets chattier.</li>
+            <li><strong>the résumé trick</strong> - <kbd>ctrl</kbd>+<kbd>p</kbd>. the lowercase disappears and paper gets my real, serious, one-page résumé. also lives at <a href="resume.html">resume.html</a>.</li>
+            <li><strong>the lamp</strong> - the cord hanging top-right. it's a real rope: grab it and pull, any direction. it stretches, and when the tension is right the switch gives. swipe through it and it swings. pull it four times fast and it has opinions. ignore the warning and keep yanking… it snaps. sparks, flicker, the works. (i fix it. eventually. the repair tape stays.)</li>
+            <li><strong>the tape</strong> - it's holding the project cards up. grab one and pull it off. the card falls, and a very small lucca comes to pin it back with a real thumbtack - a different pin, spot, and angle every time. he does not use a level.</li>
+            <li><strong>the vouch card</strong> - the button in the vouches section. typing a company summons a bonus question out of thin air. that's not a bug, that's logic.</li>
+            <li><strong>leave &amp; come back</strong> - the tab title misses you, and the favicon lies down for a nap while you're gone.</li>
+            <li><strong>the ending changes</strong> - speedrun to the bottom and the footer clocks your official time, with confetti. read slowly and it thanks you properly.</li>
+            <li><strong>small acknowledgments</strong> - copy some text. select all. go idle for a minute. hover the word "eavestroughs". the site notices things, politely, once.</li>
+            <li><strong>the console</strong> - open devtools. there's a note waiting, and an api: <code>lucca.ghost()</code>, <code>lucca.lights()</code>, <code>lucca.blueprint()</code>, <code>lucca.forget()</code>.</li>
+            <li><strong>for completionists</strong> - <a href="humans.txt">humans.txt</a>, the 404 page (make up a url), and a note at the top of view-source.</li>
           </ul>
           <p class="hand spoiler-end">that's all of them. probably. this list is hand-maintained, so if i add a secret and forget to write it down… that's just a secret again.</p>
         </div>
@@ -214,7 +214,7 @@
   <div class="print-only print-resume" aria-hidden="true">
     <header>
       <h1>Lucca Prada</h1>
-      <p class="r-sub">Software Developer — Backend &amp; AI Products</p>
+      <p class="r-sub">Software Developer - Backend &amp; AI Products</p>
       <p class="r-contact">London, Ontario · luccaprada25@gmail.com · github.com/luccahp1 · luccahp1.github.io/portfolio</p>
     </header>
 
@@ -224,14 +224,14 @@
       enterprise backend experience (Java/Spring Boot) and a parallel track record of shipping AI
       products end to end. At WSIB: health-check automation, secure request handling, and library
       modernization alongside senior developers. Independently: designed, built, and deployed an AI
-      phone receptionist and an automated lead-response product for small service businesses —
+      phone receptionist and an automated lead-response product for small service businesses -
       owning product design, unit economics, code, and deployment.</p>
     </section>
 
     <section>
       <h2>Experience</h2>
 
-      <h3>IT Solution Delivery Co-op — Technology · Workplace Safety and Insurance Board (WSIB)</h3>
+      <h3>IT Solution Delivery Co-op - Technology · Workplace Safety and Insurance Board (WSIB)</h3>
       <p class="r-meta">London, ON · May 2025 – Present (consecutive terms)</p>
       <ul>
         <li>Built backend enhancements for WSIB's health-check automation platform using Java, Python, Spring Boot, and Spring Boot Admin.</li>
@@ -241,7 +241,7 @@
         <li>Awarded the WSIB Scholars Award (full scholarship) recognizing technical capability and initiative.</li>
       </ul>
 
-      <h3>Independent Product Developer — Atrio &amp; Outpace</h3>
+      <h3>Independent Product Developer - Atrio &amp; Outpace</h3>
       <p class="r-meta">London, ON · 2025 – Present</p>
       <ul>
         <li>Designed and built <strong>Atrio</strong>, an AI phone receptionist that learns a business from its website and answers calls naturally (Next.js, Vapi voice agents, Claude API).</li>
@@ -260,9 +260,9 @@
     <section>
       <h2>Projects</h2>
       <ul>
-        <li><strong>Portfolio site</strong> — hand-written HTML/CSS/JS with local-first interactive features (cursor replay, persistent drawing, print-to-résumé). luccahp1.github.io/portfolio</li>
-        <li><strong>luccaserver</strong> — self-hosted Ubuntu server (nginx, systemd, Tailscale, UFW) running personal apps and deployments.</li>
-        <li><strong>AI currency recognition</strong> — Python computer-vision exploration; robotics club mechanical &amp; programming contributions.</li>
+        <li><strong>Portfolio site</strong> - hand-written HTML/CSS/JS with local-first interactive features (cursor replay, persistent drawing, print-to-résumé). luccahp1.github.io/portfolio</li>
+        <li><strong>luccaserver</strong> - self-hosted Ubuntu server (nginx, systemd, Tailscale, UFW) running personal apps and deployments.</li>
+        <li><strong>AI currency recognition</strong> - Python computer-vision exploration; robotics club mechanical &amp; programming contributions.</li>
       </ul>
     </section>
 
@@ -278,7 +278,7 @@
 
     <section>
       <h2>Education</h2>
-      <h3>Fanshawe College — Computer Programming &amp; Analysis</h3>
+      <h3>Fanshawe College - Computer Programming &amp; Analysis</h3>
       <p class="r-meta">London, ON · Sep 2024 – Present · WSIB Scholars Award (full scholarship)</p>
       <p>Coursework: Java, Python, SQL, C++, web technologies, Agile, system design.</p>
     </section>
@@ -288,7 +288,7 @@
   <button class="tool pencil-btn" id="pencil-btn" aria-label="draw on this page (press d)" title="draw on this page (d)">
     <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 20 L5.5 15.5 L16.5 4.5 A 1.6 1.6 0 0 1 19.5 7.5 L8.5 18.5 Z M14.8 6.2 L17.8 9.2"/></svg>
   </button>
-  <div class="pencil-hud mono" id="pencil-hud" hidden>pencil on — <kbd>esc</kbd> stop · <kbd>c</kbd> ink · <kbd>z</kbd> undo · <kbd>x</kbd> clear</div>
+  <div class="pencil-hud mono" id="pencil-hud" hidden>pencil on - <kbd>esc</kbd> stop · <kbd>c</kbd> ink · <kbd>z</kbd> undo · <kbd>x</kbd> clear</div>
 
   <!-- terminal toggle (mostly for touch screens) -->
   <button class="tool term-btn mono" id="term-btn" aria-label="open the terminal (press /)" title="terminal (/)">›_</button>
@@ -316,7 +316,7 @@
       <label for="v-company">company <span class="v-opt">(optional)</span></label>
       <input id="v-company" maxlength="80" autocomplete="organization">
       <div id="v-role-wrap" hidden>
-        <p class="hand v-role-note">oh, a company! ok, one more then — this question did not
+        <p class="hand v-role-note">oh, a company! ok, one more then - this question did not
         exist five seconds ago. friends and family never see it. efficiency.</p>
         <label for="v-role">your role there <span class="v-opt">(also optional)</span></label>
         <input id="v-role" maxlength="80" autocomplete="organization-title">

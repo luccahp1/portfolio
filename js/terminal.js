@@ -35,7 +35,7 @@
     input.focus();
     if (!opened) {
       opened = true;
-      line("you found the terminal. type `help` — or don't, i'm a sign not a cop.", "term-dim");
+      line("you found the terminal. type `help` - or don't, i'm a sign not a cop.", "term-dim");
     }
     return "";
   }
@@ -86,20 +86,25 @@
   };
 
   const CHANGELOG = [
-    "v1.3 — jul 3 2026 — the thumbtacks are real now (vector pack, hand-cropped),",
+    "v1.4 - jul 3 2026 - the lamp cord got physics. actual physics: a little",
+    "        rope simulation, gravity and springs and everything. grab it,",
+    "        pull it any direction, feel it stretch until the switch gives.",
+    "        it only simulates when you're close - it naps otherwise. the",
+    "        ghost stopped rushing, and popups got a paper slip to sit on.",
+    "v1.3 - jul 3 2026 - the thumbtacks are real now (vector pack, hand-cropped),",
     "        they land somewhere different every time, and pinned notes hang",
     "        crooked with a curled corner. popups happen where things happen,",
     "        slightly slanted, as bob ross intended. the guestbook grew up:",
-    "        it's a vouch card — typing a company summons a bonus question.",
-    "v1.2 — jul 3 2026 — blueprint mode measures pixels. the cord can snap",
+    "        it's a vouch card - typing a company summons a bonus question.",
+    "v1.2 - jul 3 2026 - blueprint mode measures pixels. the cord can snap",
     "        (sparks, flicker, one very sad sound) and gets taped back up.",
-    "        the tape is pullable — a small lucca comes to pin things back.",
+    "        the tape is pullable - a small lucca comes to pin things back.",
     "        speedruns get confetti and an official time. the résumé got a",
     "        full rewrite: cat it at resume.html or just ctrl+p.",
-    "v1.1 — jul 3 2026 — the site learned names, seasons, and manners.",
-    "        favicon naps, lamp sass, three inks, speedrun detection, and —",
-    "        fine — a spoiler button that lists every secret. i caved.",
-    "v1.0 — jul 2 2026 — site is born. immediately gains object permanence:",
+    "v1.1 - jul 3 2026 - the site learned names, seasons, and manners.",
+    "        favicon naps, lamp sass, three inks, speedrun detection, and -",
+    "        fine - a spoiler button that lists every secret. i caved.",
+    "v1.0 - jul 2 2026 - site is born. immediately gains object permanence:",
     "        it remembers visits, keeps doodles, and replays your last cursor.",
     "        no frameworks were consulted.",
   ];
@@ -119,7 +124,7 @@
       const n = 1000 + (state.firstVisit % 8999);
       line("visitor #" + n + " (self-issued, non-transferable)");
       if (state.name) line("answers to: " + state.name);
-      else line("name: unknown. fixable — try: call me maple", "term-dim");
+      else line("name: unknown. fixable - try: call me maple", "term-dim");
       line("first seen: " + rel(Date.now() - state.firstVisit) + " ago · visits: " + state.visits);
       if (state.spoiled) line("read the spoilers: yes. no judgment. (some judgment.)", "term-dim");
       if (state.vouched) line("vouched: yes. legend.", "term-dim");
@@ -170,7 +175,7 @@
       window.open("resume.html", "_blank");
     },
     guestbook() {
-      line("the guestbook grew up. it's a vouching system now — same energy, more useful.");
+      line("the guestbook grew up. it's a vouching system now - same energy, more useful.");
       line("try: vouch", "term-dim");
     },
     vouch() {
@@ -188,7 +193,7 @@
     echo(arg) { line(arg || ""); },
     man(arg) {
       arg === "lucca"
-        ? line("LUCCA(1) — builds small software. accepts coffee. see also: hire(1)")
+        ? line("LUCCA(1) - builds small software. accepts coffee. see also: hire(1)")
         : line("the manual is the page you're standing on.");
     },
     ping(arg) {
@@ -213,7 +218,7 @@
     }
     if (t === "sudo hire lucca") {
       line("checking credentials… you seem great.");
-      html('ok. it\'s done on my end — yours is one email: ' +
+      html('ok. it\'s done on my end - yours is one email: ' +
            '<a href="mailto:luccaprada25@gmail.com?subject=let\'s work together">luccaprada25@gmail.com</a>');
       return;
     }

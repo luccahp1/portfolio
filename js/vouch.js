@@ -1,4 +1,4 @@
-/* the vouch card. no backend — it drafts an email in YOUR mail app,
+/* the vouch card. no backend - it drafts an email in YOUR mail app,
    and confirmed vouches get hand-typed into the html. verification
    process: my eyeballs. it has never been hacked. */
 
@@ -71,7 +71,7 @@
 
     location.href =
       "mailto:luccaprada25@gmail.com" +
-      "?subject=" + encodeURIComponent("i vouch for lucca — " + name) +
+      "?subject=" + encodeURIComponent("i vouch for lucca - " + name) +
       "&body=" + encodeURIComponent(body);
 
     state.vouched = true;

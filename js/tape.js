@@ -1,5 +1,5 @@
 /* the tape. it's load-bearing, until someone tugs it.
-   then a very small lucca has to come fix things — with a real thumbtack,
+   then a very small lucca has to come fix things - with a real thumbtack,
    somewhere slightly different every time, because he's in a hurry. */
 
 (function () {

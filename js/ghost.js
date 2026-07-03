@@ -1,5 +1,5 @@
 /* the ghost. this site records your cursor (locally, only locally)
-   and next visit, it wanders the page again — a little echo of you.
+   and next visit, it wanders the page again - a little echo of you.
    first-timers get my ghost instead. i recorded it so nobody's first
    visit feels lonely. */
 
@@ -13,7 +13,7 @@
   const MIN_PTS = 50;
   const MIN_DUR = 8000;
   const AUTO_DELAY = 2500;
-  const MAX_REPLAY = 35000;
+  const MAX_REPLAY = 45000;
 
   const docH = () => document.documentElement.scrollHeight;
 
@@ -86,33 +86,33 @@
 
     let cur = { x: hello.x - 0.1, y: hello.y - 60 };
     pts.push({ t: 0, x: cur.x, y: Math.round(cur.y) });
-    glide(cur, hello, 900, 12); cur = hello;
+    glide(cur, hello, 1200, 12); cur = hello;
     push(cur.x, cur.y, 500);
     if (uL && uR) {
-      glide(cur, uL, 700, 10); cur = uL;
-      glide(cur, uR, 1100, 16); cur = uR;   // re-tracing my own underline
+      glide(cur, uL, 900, 10); cur = uL;
+      glide(cur, uR, 1400, 16); cur = uR;   // re-tracing my own underline
       push(cur.x, cur.y, 400);
     }
     if (card) {
-      glide(cur, card, 1000, 14); cur = card;
+      glide(cur, card, 1300, 14); cur = card;
       for (let i = 0; i < 14; i++) {        // a little proud circle around it
         const a = (i / 14) * Math.PI * 2;
-        push(card.x + Math.cos(a) * 0.035, card.y + Math.sin(a) * 16, 60);
+        push(card.x + Math.cos(a) * 0.035, card.y + Math.sin(a) * 16, 85);
       }
       cur = { x: card.x + 0.035, y: card.y };
       push(cur.x, cur.y, 600, 1);
     }
     if (guest) {
-      glide(cur, guest, 1100, 14); cur = guest;
+      glide(cur, guest, 1400, 14); cur = guest;
       push(cur.x + 0.01, cur.y + 4, 300);
       push(cur.x - 0.01, cur.y - 4, 300);
     }
     if (cord) {
-      glide(cur, cord, 1000, 12); cur = cord;
+      glide(cur, cord, 1300, 12); cur = cord;
       push(cur.x, cur.y, 800);              // considered pulling it. didn't.
     }
     glide(cur, { x: cur.x + 0.08, y: Math.max(0, cur.y - 200) }, 700, 8);
-    return { w: innerWidth, dh: docH(), pts, label: "lucca, 2:14 am — checking this thing works" };
+    return { w: innerWidth, dh: docH(), pts, label: "lucca, 2:14 am - checking this thing works" };
   }
 
   /* ---------- replay ---------- */
@@ -160,7 +160,7 @@
     for (let i = 0; i < src.pts.length; i++) {
       const p = src.pts[i];
       const dt = i === 0 ? 0 : Math.min(1500, p.t - src.pts[i - 1].t);
-      tAcc += dt;
+      tAcc += dt * 1.35;
       pts.push({ t: tAcc, x: p.x * innerWidth, y: Math.min(docH() - 10, p.y * hRatio), c: p.c });
     }
     const scale = pts[pts.length - 1].t > MAX_REPLAY ? MAX_REPLAY / pts[pts.length - 1].t : 1;
@@ -185,8 +185,8 @@
       const a = pts[idx], b = pts[idx + 1];
       const f = Math.max(0, Math.min(1, (t - a.t) / Math.max(1, b.t - a.t)));
       const tx = a.x + (b.x - a.x) * f, ty = a.y + (b.y - a.y) * f;
-      gx += (tx - gx) * 0.35;  // a ghost should drift a little behind itself
-      gy += (ty - gy) * 0.35;
+      gx += (tx - gx) * 0.24;  // a ghost should drift a little behind itself
+      gy += (ty - gy) * 0.24;
       el.style.transform = `translate3d(${gx}px, ${gy}px, 0)`;
       if (document.hidden) return end();
       requestAnimationFrame(frame);
@@ -205,7 +205,7 @@
     return "…";
   }
 
-  /* ---------- auto-play: soon, every visit — plus an encore for lingerers ---------- */
+  /* ---------- auto-play: soon, every visit - plus an encore for lingerers ---------- */
   if (!prefersReduced && !isTouch && innerWidth > 760) {
     setTimeout(() => {
       if (!document.hidden) play(prev ? "you" : "lucca");
