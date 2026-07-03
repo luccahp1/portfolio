@@ -7,7 +7,23 @@
   if (!site) return;
   const { toast, prefersReduced } = site;
 
-  let pulls = 0;
+  /* what lucca says while he pins your vandalism back up. random, no
+     immediate repeats - he has more than two feelings about this. */
+  const TAPE_LINES = [
+    "hey! why you tryna destroy my website?",
+    "aw man. i lowkey gotta buy better tape.",
+    "that tape was load-bearing. the pin is doing overtime now.",
+    "every pull is another trip to the hardware store. for me. not you.",
+    "the cards and i had a system. HAD.",
+    "you pull, i pin. this is our whole relationship now.",
+  ];
+  let lastLine = -1;
+  function tapeLine() {
+    let i;
+    do { i = Math.floor(Math.random() * TAPE_LINES.length); } while (i === lastLine);
+    lastLine = i;
+    return TAPE_LINES[i];
+  }
 
   document.querySelectorAll(".card .tape").forEach((tape) => {
     let start = null;
@@ -65,14 +81,7 @@
     card.style.setProperty("--pin-tilt", spec.tilt + "deg");
     card.classList.remove("fallen");
     card.classList.add("pinned");
-    pulls++;
-    toast(
-      pulls === 1
-        ? "hey! why you tryna destroy my website?"
-        : "aw man. i lowkey gotta buy better tape.",
-      4200,
-      { el: card, dy: -38 }
-    );
+    toast(tapeLine(), 4200, { el: card, dy: -38 });
   }
 
   function sendLucca(card, spec) {

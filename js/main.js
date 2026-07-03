@@ -17,7 +17,9 @@
     try { return JSON.parse(localStorage.getItem(KEY)) || {}; }
     catch { return {}; }
   }
+  let forgotten = false;   // once you ask to be forgotten, nothing re-saves you
   function save() {
+    if (forgotten) return;
     try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
   }
 
@@ -47,9 +49,11 @@
   }
 
   let toastEl, toastTimer;
-  // toast(msg, ms, at) - pass at = { el, fixed?, ax?, dy?, shift? } and the note
-  // appears near where the thing actually happened, slightly crooked on purpose.
+  // toast(msg, ms, at) - pass at = { el, fixed?, ax?, dy?, shift? } (or a plain
+  // { x, y } viewport point) and the note appears near where the thing actually
+  // happened, slightly crooked on purpose.
   function toast(msg, ms = 3200, at) {
+    ms += 2000;   // toasts linger a little - people kept missing the punchline
     if (!toastEl) {
       toastEl = document.createElement("div");
       toastEl.className = "toast";
@@ -57,10 +61,16 @@
       document.body.appendChild(toastEl);
     }
     toastEl.classList.remove("show");
-    toastEl.classList.toggle("anchored", !!(at && at.el));
+    toastEl.classList.toggle("anchored", !!(at && (at.el || at.x !== undefined)));
     toastEl.style.cssText = "";
     toastEl.style.setProperty("--toast-rot", (Math.random() * 5 - 2.5).toFixed(1) + "deg");
-    if (at && at.el) {
+    if (at && at.x !== undefined) {
+      toastEl.style.position = "fixed";
+      toastEl.style.left = at.x + "px";
+      toastEl.style.top = at.y + "px";
+      toastEl.style.transform = "translateX(-50%)";
+      toastEl.style.bottom = "auto";
+    } else if (at && at.el) {
       const r = at.el.getBoundingClientRect();
       const jx = Math.random() * 20 - 10, jy = Math.random() * 6 - 3;
       const ax = at.ax === undefined ? 0.5 : at.ax;
@@ -164,14 +174,14 @@
   }
   if (state.theme) document.documentElement.dataset.theme = state.theme;
 
-  // a very small, very quiet "click". a lamp should sound like something.
+  // one tiny triangle blip, reused everywhere something should go "tick"
   let actx;
-  function click() {
+  function blip(freq) {
     try {
       actx = actx || new (window.AudioContext || window.webkitAudioContext)();
       const o = actx.createOscillator(), gn = actx.createGain();
       o.type = "triangle";
-      o.frequency.value = currentTheme() === "dark" ? 620 : 880;
+      o.frequency.value = freq;
       gn.gain.setValueAtTime(0.06, actx.currentTime);
       gn.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.07);
       o.connect(gn).connect(actx.destination);
@@ -179,6 +189,8 @@
       o.stop(actx.currentTime + 0.08);
     } catch {}
   }
+  // a very small, very quiet "click". a lamp should sound like something.
+  function click() { blip(currentTheme() === "dark" ? 620 : 880); }
 
   // a short, quiet "glass gave up" noise for when the cord snaps
   function crack() {
@@ -228,9 +240,20 @@
   let cordPulls = [];
   let cordJoked = false;
   let cordSnapped = false;
+  let cordBreaks = 0;      // it survives one snap. the second one changes things.
+  let cordDead = false;    // duct-taped: the rope is scenery now
   const cordBtn = $("#cord");
-  // lamp commentary happens at the lamp, not across the room
-  const cordAt = () => ({ el: cordBtn, fixed: true, dy: 104, shift: "-78%" });
+  // lamp commentary lands within arm's reach of the lamp - never ON the cord,
+  // always on screen, and somewhere a little different every time
+  function cordAt() {
+    const r = cordBtn.getBoundingClientRect();
+    const x = r.left - 140 - Math.random() * 150;               // left of the cord
+    const y = r.top + r.height / 2 - 30 + Math.random() * 230;  // beside to below
+    return {
+      x: Math.max(150, Math.min(innerWidth - 170, x)),
+      y: Math.max(14, Math.min(innerHeight - 80, y)),
+    };
+  }
 
   // the cord is a real rope now: a chain of verlet nodes under gravity,
   // with hooke's-law-ish distance constraints holding it together.
@@ -242,15 +265,22 @@
   const cordSvg = cordBtn?.querySelector("svg");
   const cordPathEl = $("#cord-path");
   const cordKnobEl = $("#cord-knob");
-  const SEGS = 9, REST = 70 / SEGS;   // 70px of cord, same as it ever was
-  const GRAV = 2600;                  // px/s^2 in svg space
-  const DAMPING = 0.985;              // air resistance: F_d = -c*v, folded into verlet
-  const WAKE_R = 160;                 // physics doesn't exist until you're this close
-  const BRUSH_R = 16;                 // a swipe this near a node shoves it
-  const STRETCH_PX = 28;              // the most the cord will stretch past natural
-  const PULL_PX = 16;                 // stretch where the switch gives
+  // the tuning knobs. `physics` in the terminal opens live sliders for these.
+  // deliberately never written to localStorage: a wild slider session should
+  // never outlive a reload, so nobody's lamp can be bricked permanently.
+  const PHYS_DEF = {
+    segs: 9,        // chain links (70px of cord, same as it ever was)
+    grav: 2600,     // px/s^2 in svg space
+    damping: 0.985, // air resistance: F_d = -c*v, folded into verlet
+    wake: 160,      // physics doesn't exist until you're this close
+    brush: 16,      // a swipe this near a node shoves it
+    stretch: 28,    // the most the cord will stretch past natural
+    pull: 16,       // stretch where the switch gives
+  };
+  const PH = { ...PHYS_DEF };
+  let REST = 70 / PH.segs;
   let nodes = [];
-  let ropeEnd = SEGS;                 // last live node (shrinks when snapped)
+  let ropeEnd = PH.segs;              // last live node (shrinks when snapped)
   let ropeRunning = false, ropeCalm = 0, ropeT = 0;
   let grab = null;                    // { i, cx, cy, x0, y0, t0, fired }
   let mCX = -1e4, mCY = -1e4, mVX = 0, mVY = 0, mT = 0;
@@ -267,7 +297,7 @@
   }
   function ropeReset() {
     nodes = [];
-    for (let i = 0; i <= SEGS; i++) nodes.push({ x: 12, y: i * REST, px: 12, py: i * REST });
+    for (let i = 0; i <= PH.segs; i++) nodes.push({ x: 12, y: i * REST, px: 12, py: i * REST });
     ropeRender();
   }
   function ropeRender() {
@@ -283,10 +313,10 @@
 
   function ropeStep(dt) {
     // verlet: x_new = x + (x - x_prev)*damping + a*dt^2
-    const g = GRAV * dt * dt;
+    const g = PH.grav * dt * dt;
     for (let i = 1; i <= ropeEnd; i++) {
       const n = nodes[i];
-      const vx = (n.x - n.px) * DAMPING, vy = (n.y - n.py) * DAMPING;
+      const vx = (n.x - n.px) * PH.damping, vy = (n.y - n.py) * PH.damping;
       n.px = n.x; n.py = n.y;
       n.x += vx; n.y += vy + g;
     }
@@ -295,7 +325,7 @@
       const m = toLocal(mCX, mCY);
       for (let i = 1; i <= ropeEnd; i++) {
         const n = nodes[i];
-        if (Math.hypot(n.x - m.x, n.y - m.y) < BRUSH_R) {
+        if (Math.hypot(n.x - m.x, n.y - m.y) < PH.brush) {
           n.px -= Math.max(-14, Math.min(14, mVX * dt * 0.6));
           n.py -= Math.max(-14, Math.min(14, mVY * dt * 0.6));
         }
@@ -307,11 +337,11 @@
       const m = toLocal(grab.cx, grab.cy);
       const natural = grab.i * REST;
       let dx = m.x - 12, dy = m.y;
-      const dist = Math.hypot(dx, dy), max = natural + STRETCH_PX;
+      const dist = Math.hypot(dx, dy), max = natural + PH.stretch;
       if (dist > max) { dx *= max / dist; dy *= max / dist; }
       const n = nodes[grab.i];
       n.x = 12 + dx; n.y = dy; n.px = n.x; n.py = n.y;
-      if (!grab.fired && dist - natural > PULL_PX) {
+      if (!grab.fired && dist - natural > PH.pull) {
         grab.fired = true;
         endGrab(true);   // the switch gives: lights flip, knob slips free
       }
@@ -343,7 +373,7 @@
   }
   function mouseNearCord() {
     const r = ropeRect();
-    return Math.hypot(mCX - (r.left + r.width / 2), mCY - (r.top + r.height * 0.7)) < WAKE_R;
+    return Math.hypot(mCX - (r.left + r.width / 2), mCY - (r.top + r.height * 0.7)) < PH.wake;
   }
   function ropeWake() {
     if (ropeRunning || prefersReduced || !cordSvg) return;
@@ -384,12 +414,12 @@
       mCX = e.clientX; mCY = e.clientY; mT = t;
       if (grab) { grab.cx = e.clientX; grab.cy = e.clientY; }
       // the optimization: the physics only runs when you're near the cord
-      if (mouseNearCord()) ropeWake();
+      if (!cordDead && mouseNearCord()) ropeWake();
     }, { passive: true });
     addEventListener("pointerup", () => endGrab(false));
     addEventListener("pointercancel", () => { grab = null; });
     cordBtn.addEventListener("pointerdown", (e) => {
-      if (cordSnapped) return;
+      if (cordSnapped || cordDead) return;
       const m = toLocal(e.clientX, e.clientY);
       // grab whichever node is under your finger (never right at the anchor)
       let gi = ropeEnd, best = 1e9;
@@ -407,10 +437,28 @@
     cordBtn.addEventListener("click", (e) => { if (e.detail === 0) pullCord(); });
   }
 
+  // the lights cut out properly when the cord snaps - a full-screen overlay
+  // that stutters, long enough that people actually see it. (an overlay, not
+  // a filter on body: filters turn body into a containing block and yank
+  // every position:fixed thing out of the viewport.)
+  function flickerLights() {
+    if (prefersReduced) return;
+    const f = document.createElement("div");
+    f.className = "flick";
+    document.body.appendChild(f);
+    setTimeout(() => f.remove(), 2600);
+  }
+
+  function flipLights() {
+    setTheme(currentTheme() === "dark" ? "light" : "dark");
+  }
+
   function snapCord() {
     cordSnapped = true;
     grab = null;
-    ropeEnd = 3;   // a sad little stub stays behind
+    cordBreaks++;
+    const again = cordBreaks >= 2;
+    ropeEnd = Math.min(3, PH.segs);   // a sad little stub stays behind
     ropeRender();
     crack();
     const r = cordBtn.getBoundingClientRect();
@@ -428,28 +476,93 @@
         '<circle cx="12" cy="54" r="6" class="cord-knob"/></svg>';
       document.body.appendChild(fall);
       setTimeout(() => fall.remove(), 1500);
-      document.documentElement.classList.add("flicker");
-      setTimeout(() => document.documentElement.classList.remove("flicker"), 950);
+      flickerLights();
     }
-    toast("annnd it snapped. lights are stuck like this now. hope it was worth it.", 4200, cordAt());
+    toast(again
+      ? "you broke it AGAIN. ok. hold on. i'm getting the toolbox."
+      : "annnd it snapped. lights are stuck like this now. hope it was worth it.", 4200, cordAt());
+    setTimeout(again ? condemnCord : repairCord, again ? 4200 : 9000);
+  }
+
+  function repairCord() {
+    cordSnapped = false;
+    cordPulls = [];
+    cordBtn.classList.remove("snapped");
+    cordBtn.classList.add("repaired");   // the tape stays. a reminder.
+    ropeEnd = PH.segs;
+    ropeReset();
+    toast("fixed it. that was my last spare cord - if this one snaps, i'm getting the duct tape.", 4600, cordAt());
+  }
+
+  // the second snap. no more nice repairs: the cord gets duct-taped into
+  // scenery, and a real wall switch gets drilled in next to it.
+  let wallSwitch = null, wsToasted = false;
+  function condemnCord() {
+    cordSnapped = false;
+    cordDead = true;
+    cordPulls = [];
+    grab = null;
+    cordBtn.classList.remove("snapped");
+    cordBtn.classList.add("dead");
+    cordBtn.disabled = true;
+    ropeEnd = PH.segs;
+    ropeReset();
+    ropeRunning = false;   // physics is over for this cord
+    const t1 = document.createElement("i"), t2 = document.createElement("i");
+    t1.className = "ducttape dt1";
+    t2.className = "ducttape dt2";
+    t1.setAttribute("aria-hidden", "true");
+    t2.setAttribute("aria-hidden", "true");
+    cordBtn.append(t1, t2);
+    makeWallSwitch();
     setTimeout(() => {
-      cordSnapped = false;
-      cordPulls = [];
-      cordBtn.classList.remove("snapped");
-      cordBtn.classList.add("repaired");   // the tape stays. a reminder.
-      ropeEnd = SEGS;
-      ropeReset();
-      toast("fixed it. that was my last cord, so.", 3800, cordAt());
-    }, 9000);
+      toast("duct tape and a real switch, like a normal house. flip that instead. (miss the string? the terminal knows `rewire`.)", 8200, cordAt());
+    }, 800);
+  }
+
+  function makeWallSwitch() {
+    if (wallSwitch) return;
+    wallSwitch = document.createElement("button");
+    wallSwitch.className = "wallswitch";
+    wallSwitch.id = "wallswitch";
+    wallSwitch.setAttribute("aria-label", "toggle the lights (the boring way)");
+    wallSwitch.title = "the boring way";
+    wallSwitch.innerHTML = '<span class="ws-nub" aria-hidden="true"></span>';
+    wallSwitch.addEventListener("click", () => {
+      flipLights();
+      if (!wsToasted) {
+        wsToasted = true;
+        toast("click. no rope, no physics, no soul. i hope you're happy.", 4600, cordAt());
+      }
+    });
+    document.body.appendChild(wallSwitch);
+  }
+
+  // the way back. only means something once the cord is duct tape.
+  function rewire() {
+    if (!cordDead) return "the cord is fine. sweet of you to check on it.";
+    cordDead = false;
+    cordBreaks = 0;
+    cordPulls = [];
+    cordBtn.disabled = false;
+    cordBtn.classList.remove("dead");
+    cordBtn.querySelectorAll(".ducttape").forEach((el) => el.remove());
+    wallSwitch?.remove();
+    wallSwitch = null;
+    wsToasted = false;
+    ropeEnd = PH.segs;
+    ropeReset();
+    toast("restrung. one brand new cord. i can't believe i'm giving you a third one.", 5200, cordAt());
+    return "rewired. the string is back, the switch is gone. please be gentle. (you won't be.)";
   }
 
   function pullCord() {
-    if (cordSnapped) return;
+    if (cordSnapped || cordDead) return;
     if (!prefersReduced && nodes.length) {
       nodes[ropeEnd].py -= 10;   // a yank counts as a shove
       ropeWake();
     }
-    setTheme(currentTheme() === "dark" ? "light" : "dark");
+    flipLights();
     if (!state.cordPulled) {
       state.cordPulled = true;
       save();
@@ -464,6 +577,81 @@
     } else if (cordJoked && cordPulls.length >= 8) {
       snapCord();
     }
+  }
+
+  /* ---------- the physics panel (terminal: `physics`) ----------
+     live sliders for the rope. on purpose, none of this is ever persisted:
+     reload the page and the cord is factory-fresh, unbrickable. */
+  let physPanel = null;
+  const PHYS_ROWS = [
+    ["grav", "gravity", -4000, 8000, 50],
+    ["damping", "damping", 0.9, 1, 0.001],
+    ["wake", "wake radius", 40, 400, 5],
+    ["brush", "brush radius", 4, 60, 1],
+    ["stretch", "max stretch", 0, 120, 1],
+    ["pull", "pull to fire", 4, 80, 1],
+    ["segs", "segments", 4, 24, 1],
+  ];
+  function physApply(key) {
+    if (key === "segs") {
+      REST = 70 / PH.segs;
+      ropeEnd = cordSnapped ? Math.min(3, PH.segs) : PH.segs;
+      ropeReset();
+    }
+    if (!cordDead) ropeWake();
+  }
+  function physToggle() {
+    if (prefersReduced) return "your system asked for reduced motion, so the cord doesn't simulate. sliders would just be lying to you.";
+    if (physPanel) { physPanel.remove(); physPanel = null; return false; }
+    physPanel = document.createElement("div");
+    physPanel.className = "phys-panel";
+    const title = document.createElement("p");
+    title.className = "phys-title hand";
+    title.textContent = "cord physics";
+    const x = document.createElement("button");
+    x.className = "phys-x linkish mono";
+    x.textContent = "×";
+    x.setAttribute("aria-label", "close the physics panel");
+    x.addEventListener("click", physToggle);
+    title.appendChild(x);
+    physPanel.appendChild(title);
+    const vals = [];
+    for (const [key, label, min, max, step] of PHYS_ROWS) {
+      const row = document.createElement("label");
+      row.className = "phys-row mono";
+      const name = document.createElement("span");
+      name.textContent = label;
+      const val = document.createElement("b");
+      val.textContent = String(PH[key]);
+      const inp = document.createElement("input");
+      inp.type = "range";
+      inp.min = min; inp.max = max; inp.step = step;
+      inp.value = PH[key];
+      inp.addEventListener("input", () => {
+        PH[key] = +inp.value;
+        val.textContent = String(PH[key]);
+        physApply(key);
+      });
+      vals.push([key, val, inp]);
+      row.append(name, val, inp);
+      physPanel.appendChild(row);
+    }
+    const reset = document.createElement("button");
+    reset.className = "phys-reset mono";
+    reset.textContent = "factory settings";
+    reset.addEventListener("click", () => {
+      Object.assign(PH, PHYS_DEF);
+      for (const [key, val, inp] of vals) { inp.value = PH[key]; val.textContent = String(PH[key]); }
+      physApply("segs");
+    });
+    const note = document.createElement("p");
+    note.className = "phys-note mono";
+    note.textContent = cordDead
+      ? "the cord is duct-taped right now, so it won't move. also: nothing here is saved."
+      : "nothing here is saved. reload = factory settings.";
+    physPanel.append(reset, note);
+    document.body.appendChild(physPanel);
+    return true;
   }
 
   /* ---------- tab title misses you (the favicon takes a nap) ---------- */
@@ -498,36 +686,110 @@
   });
 
   /* ---------- you read the whole thing (or speedran it) ---------- */
-  const loadedAt = now();
+  // trackpads scroll in many small steps, mice in big chunky ones. anyone
+  // scrolling trackpad-style gets a fairer speedrun clock.
+  let wheelSeen = 0, wheelSmall = 0;
+  addEventListener("wheel", (e) => {
+    if (wheelSeen >= 40) return;
+    wheelSeen++;
+    if (e.deltaMode === 0 && Math.abs(e.deltaY) > 0 && Math.abs(e.deltaY) < 40) wheelSmall++;
+  }, { passive: true });
+  const padLike = () => wheelSeen >= 5 && wheelSmall / wheelSeen > 0.6;
+
+  let speedStart = now();
+  let rearmSpeedrun = null;   // the `race` command resets the clock through this
   const foot = $(".foot"), footRead = $("#foot-read");
   if (foot && footRead) {
+    const footReadDefault = footRead.textContent;
+    const footEnd = $(".spoilers") || foot;
     let revealed = false;
+    let io = null;
     const reveal = () => {
       if (revealed) return;
       revealed = true;
-      const elapsed = now() - loadedAt;
+      const elapsed = now() - speedStart;
+      const limit = padLike() ? 15000 : 9000;
       // under 1.2s isn't a speedrun - that's the browser restoring your scroll
-      if (elapsed > 1200 && elapsed < 9000) {
+      if (elapsed > 1200 && elapsed < limit) {
         footRead.textContent =
           "you speedran my website. bottom in " + (elapsed / 1000).toFixed(2) + "s. record pace.";
         confetti();
       }
       footRead.hidden = false;
       removeEventListener("scroll", nearBottom);
+      io?.disconnect();
     };
-    // belt: intersection observer on the very last thing in the footer
-    const footEnd = $(".spoilers") || foot;
-    if ("IntersectionObserver" in window) {
-      const io = new IntersectionObserver((entries) => {
-        if (entries.some((e) => e.isIntersecting)) { reveal(); io.disconnect(); }
-      }, { threshold: 0.15 });
-      io.observe(footEnd);
-    }
     // suspenders: plain scroll math
     const nearBottom = () => {
       if (innerHeight + scrollY >= document.documentElement.scrollHeight - 120) reveal();
     };
-    addEventListener("scroll", nearBottom, { passive: true });
+    // belt: intersection observer on the very last thing in the footer
+    const arm = () => {
+      if ("IntersectionObserver" in window) {
+        io = new IntersectionObserver((entries) => {
+          if (entries.some((e) => e.isIntersecting)) reveal();
+        }, { threshold: 0.15 });
+        io.observe(footEnd);
+      }
+      addEventListener("scroll", nearBottom, { passive: true });
+    };
+    arm();
+    rearmSpeedrun = () => {
+      io?.disconnect();
+      removeEventListener("scroll", nearBottom);
+      revealed = false;
+      footRead.hidden = true;
+      footRead.textContent = footReadDefault;
+      speedStart = now();
+      arm();
+    };
+  }
+
+  /* ---------- the race (terminal: `race`) ----------
+     a proper starting line for speedrunners: back to the top, scrolling
+     locked, one very large checkered flag, three beeps, GO. */
+  let racing = false;
+  function race() {
+    if (racing) return "one race at a time.";
+    racing = true;
+    scrollTo({ top: 0, behavior: "auto" });
+    const keys = ["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " ", "Spacebar"];
+    const stopKeys = (e) => { if (keys.includes(e.key)) e.preventDefault(); };
+    const stopScroll = (e) => e.preventDefault();
+    document.documentElement.style.overflow = "hidden";
+    addEventListener("wheel", stopScroll, { passive: false });
+    addEventListener("touchmove", stopScroll, { passive: false });
+    addEventListener("keydown", stopKeys);
+    const unlock = () => {
+      document.documentElement.style.overflow = "";
+      removeEventListener("wheel", stopScroll);
+      removeEventListener("touchmove", stopScroll);
+      removeEventListener("keydown", stopKeys);
+    };
+    const banner = document.createElement("div");
+    banner.className = "race-banner";
+    banner.innerHTML = '<div class="race-flag"></div><span class="race-count display"></span>';
+    const count = banner.querySelector(".race-count");
+    document.body.appendChild(banner);
+    let n = 3;
+    count.textContent = "3";
+    blip(520);
+    const iv = setInterval(() => {
+      n--;
+      if (n > 0) {
+        count.textContent = String(n);
+        blip(520);
+        return;
+      }
+      clearInterval(iv);
+      count.textContent = "GO!";
+      blip(1040);
+      unlock();                 // the page is yours again
+      rearmSpeedrun?.();        // and the clock starts NOW
+      banner.classList.add("done");
+      setTimeout(() => { banner.remove(); racing = false; }, 900);
+    }, 1000);
+    return "on your marks…";
   }
 
   /* ---------- paper-scrap confetti, for the speedrunners ---------- */
@@ -650,6 +912,7 @@
     "  /            → a terminal. of course there's a terminal.\n" +
     "  ↑↑↓↓←→←→ b a → blueprint mode.\n" +
     "  ctrl+p       → the whole site prints as my résumé.\n" +
+    "  race/physics → newer terminal toys. hover the header name, too.\n" +
     "  lucca.*      → yes, there's an api. try lucca.ghost()\n\n" +
     "or press the spoiler button at the very bottom like a quitter.\n" +
     "source: https://github.com/luccahp1/portfolio - handwritten, ghosts included.", css2
@@ -724,16 +987,23 @@
 
   /* ---------- the public api (it felt right) ---------- */
   window.lucca = {
-    lights: pullCord,
+    lights: () => { cordDead ? flipLights() : pullCord(); },
     blueprint: () => blueprint(),
     ghost: () => window.__ghost?.play() || "the ghost isn't awake yet. give the page a second.",
     draw: () => window.__pencil?.toggle() || "pencil's still sharpening.",
     terminal: () => window.__term?.open() || "terminal's booting.",
     secrets: () => { spBtn?.click(); return "spoilers, served."; },
+    race,
+    physics: physToggle,
+    rewire,
     forget: () => {
-      localStorage.removeItem(KEY);
-      toast("done. we've never met.");
-      return "memory wiped. it was nice knowing you (allegedly).";
+      // the latch matters: without it, the 30s heartbeat and the ghost's
+      // pagehide stash would quietly re-save everything we just deleted
+      forgotten = true;
+      try { localStorage.removeItem(KEY); } catch {}
+      toast("done. we've never met. reloading so you can see i mean it…", 3800);
+      setTimeout(() => location.reload(), 2200);
+      return "memory wiped. reloading as strangers…";
     },
   };
 

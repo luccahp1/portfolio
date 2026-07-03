@@ -24,7 +24,11 @@
 
   /* ---------- sizing & redraw ---------- */
   function inkColor() {
-    return getComputedStyle(document.body).color;
+    // read --ink off the root, not body's color: body's color TRANSITIONS when
+    // the lights flip, so reading it at theme-change time returns the old
+    // color and paints the doodles invisible (dark ink on dark paper)
+    return getComputedStyle(document.documentElement).getPropertyValue("--ink").trim() ||
+           getComputedStyle(document.body).color;
   }
 
   /* three inks on the desk: graphite, the blue pen, the margin red */
@@ -185,8 +189,9 @@
     new ResizeObserver(fit).observe(document.body);
   }
 
-  /* redraw in the new ink when the lights change */
-  new MutationObserver(redraw).observe(document.documentElement, {
+  /* redraw in the new ink when the lights change (next frame, once the new
+     theme's styles have actually landed) */
+  new MutationObserver(() => requestAnimationFrame(redraw)).observe(document.documentElement, {
     attributes: true,
     attributeFilter: ["data-theme"],
   });

@@ -78,14 +78,26 @@
       "konami     blueprints\n" +
       "ctrl+p     the résumé trick\n" +
       "call me x  the site learns your name\n" +
+      "race       a checkered flag, for people in a hurry\n" +
+      "physics    sliders for the lamp cord. play god, nothing saves\n" +
       "lucca.*    the console api\n" +
-      "spoilers   the button at the very bottom. i caved. it lists everything.\n" +
+      "hover      the name up top. the coffee in the margin. things react.\n" +
       "the tape   it's load-bearing. tug it and see.\n" +
+      "the cord   survives one snap. the second snap changes things.\n" +
+      "rewire     only means something after you find out what.\n" +
       "vouch      the card asks about your role only if you name a company. logic.\n" +
       "one more isn't listed. it finds you.",
   };
 
   const CHANGELOG = [
+    "v1.5 - jul 3 2026 - the cord now snaps twice. the second time gets duct",
+    "        tape, a real wall switch, and a `rewire` command to earn the",
+    "        string back. new toys: `race` (checkered-flag countdown for",
+    "        speedrunners - trackpads get a fair clock) and `physics` (live",
+    "        sliders for the rope, never saved). the snap flicker is actually",
+    "        visible now, toasts linger longer and land beside the lamp, the",
+    "        tape has more feelings, the coffee steams, the header name knows",
+    "        it isn't a handbag, and `forget` finally forgets. oops.",
     "v1.4 - jul 3 2026 - the lamp cord got physics. actual physics: a little",
     "        rope simulation, gravity and springs and everything. grab it,",
     "        pull it any direction, feel it stretch until the switch gives.",
@@ -115,9 +127,26 @@
   const commands = {
     help() {
       line("things i answer to:");
-      line("  whoami · ls · cat <file> · open <place> · now · uptime");
-      line("  lights · ghost · draw · blueprint · changelog · vouch");
-      line("  call me <name> · resume · forget · clear · exit");
+      line("  help            - shows this. duh.");
+      line("  whoami          - your permanent record");
+      line("  ls              - lists what's lying around");
+      line("  cat <file>      - reads a file. start with secrets.txt");
+      line("  open <place>    - jumps there (or github / email)");
+      line("  now             - what i'm building these days");
+      line("  uptime          - how long since the last incident");
+      line("  lights          - the lamp, minus the reaching");
+      line("  ghost           - replays a previous visitor");
+      line("  draw            - pencil mode. `d` works too");
+      line("  blueprint       - shows the construction lines");
+      line("  race            - checkered flag, three seconds, GO. for speedrunners");
+      line("  physics         - live sliders for the cord. nothing saves, go nuts");
+      line("  changelog       - what changed and when");
+      line("  vouch           - the guestbook, grown up");
+      line("  call me <name>  - teach me your name");
+      line("  resume          - the serious version, on real paper");
+      line("  forget          - i delete everything i know about you");
+      line("  clear           - wipes the screen (not your record)");
+      line("  exit            - or just esc");
       line("some commands aren't listed. that's what makes them commands.", "term-dim");
     },
     whoami() {
@@ -186,6 +215,17 @@
       close();
       window.__vouch?.open();
     },
+    race() {
+      close();
+      window.lucca?.race?.();
+    },
+    physics() {
+      const r = window.lucca?.physics?.();
+      if (typeof r === "string") return line(r);
+      if (r) { line("sliders up, top right. nothing you set there survives a reload - break anything."); close(); }
+      else line("sliders down.");
+    },
+    rewire() { line(window.lucca?.rewire?.() || "hm."); },
     forget() { line(window.lucca?.forget() || "hm."); },
     clear() { body.textContent = ""; },
     exit() { close(); },
