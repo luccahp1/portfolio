@@ -429,17 +429,135 @@ body.blueprint {
 }
 .spoiler-end { margin: 0.9rem 0 0; font-size: 1.2rem; }
 
-/* the cord sways if you hover near it */
-@keyframes sway {
-  0%, 100% { transform: rotate(0deg); }
-  30% { transform: rotate(2.2deg); }
-  70% { transform: rotate(-2deg); }
+/* the cord is never quite still — and it remembers being batted around.
+   --amp and --spd are set from js: each consecutive hover-pass adds momentum. */
+.cord svg {
+  transform-origin: 12px 0;
+  animation: cordswing var(--spd, 1.8s) ease-in-out infinite;
 }
-.cord:hover svg { animation: sway 1.4s ease-in-out infinite; transform-origin: top center; }
+@keyframes cordswing {
+  0%, 100% { rotate: calc(-1 * var(--amp, 1.1deg)); }
+  50% { rotate: var(--amp, 1.1deg); }
+}
 
 /* about's seasonal margin note sits lower than coffee */
 @media (min-width: 1150px) {
   #about .note-left { top: 1rem; }
+}
+
+/* ---------- blueprint pixel confessions ---------- */
+.bp-dim {
+  position: absolute; z-index: 25;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.68rem;
+  color: var(--pen);
+  background: var(--paper);
+  border: 1px solid var(--pen-soft);
+  border-radius: 3px;
+  padding: 0 0.3rem;
+  pointer-events: none;
+}
+#bp-live {
+  position: fixed; z-index: 60;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.72rem;
+  color: var(--paper);
+  background: var(--pen);
+  border-radius: 4px;
+  padding: 0.1rem 0.45rem;
+  pointer-events: none;
+  box-shadow: var(--shadow);
+}
+
+/* ---------- the cord can only take so much ---------- */
+.cord.snapped { pointer-events: none; }
+.cord.snapped svg { clip-path: inset(0 0 72% 0); animation: none; }
+.cord.repaired::after {
+  content: "";
+  position: absolute;
+  left: 3px; top: 30px;
+  width: 20px; height: 9px;
+  background: var(--tape);
+  border-left: 1px dashed rgba(0, 0, 0, 0.12);
+  border-right: 1px dashed rgba(0, 0, 0, 0.12);
+  transform: rotate(-14deg);
+}
+.cord-fall {
+  position: fixed; z-index: 21;
+  pointer-events: none;
+  animation: cordfall 1.3s cubic-bezier(0.5, 0, 0.9, 0.4) forwards;
+}
+@keyframes cordfall {
+  to { transform: translateY(108vh) rotate(74deg); opacity: 0.4; }
+}
+.spark {
+  position: fixed; z-index: 41;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sparkfly 0.7s ease-out forwards;
+}
+@keyframes sparkfly {
+  to { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
+}
+@keyframes lightflicker {
+  0%, 100% { filter: none; }
+  8%  { filter: brightness(0.35); }
+  12% { filter: brightness(1.2); }
+  22% { filter: brightness(0.5); }
+  30% { filter: none; }
+  44% { filter: brightness(0.3); }
+  52% { filter: brightness(1.15); }
+  70% { filter: brightness(0.6); }
+  80% { filter: none; }
+}
+:root.flicker body { animation: lightflicker 0.9s steps(1) both; }
+
+/* ---------- paper-scrap confetti ---------- */
+.confetti {
+  position: fixed; top: -18px; z-index: 45;
+  pointer-events: none;
+  border-radius: 1px;
+  animation-name: confettifall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@keyframes confettifall {
+  to { transform: translate(var(--cx), 110vh) rotate(var(--rot)); opacity: 0.85; }
+}
+
+/* ---------- the tape incident ---------- */
+.card .tape { cursor: grab; touch-action: none; }
+.card .tape:active { cursor: grabbing; }
+.tape.peeled {
+  transition: transform 0.55s ease-in, opacity 0.55s ease-in;
+  transform: translate(-50%, 0) translate(48px, -72px) rotate(38deg);
+  opacity: 0;
+}
+.card.fallen { transform: rotate(2.8deg) translateY(13px); transition: transform 0.5s cubic-bezier(0.3, 1.1, 0.5, 1); }
+.card.pinned { transform: rotate(0.4deg); }
+.pin {
+  position: absolute; z-index: 16;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ff9a86, #c4553d 62%, #7e2d1d);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
+  animation: pinpop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes pinpop {
+  from { transform: scale(0); }
+  70%  { transform: scale(1.25); }
+  to   { transform: scale(1); }
+}
+.lmouse { position: absolute; z-index: 17; pointer-events: none; }
+.lmouse svg path { fill: var(--ink); stroke: var(--paper); stroke-width: 1; }
+.lmouse-tag {
+  position: absolute; left: 14px; top: 16px;
+  font-family: "Caveat", cursive; font-size: 1.05rem; white-space: nowrap;
+  color: var(--paper);
+  background: var(--ink);
+  border-radius: 999px;
+  padding: 0 0.6rem;
 }
 
 /* toast for little announcements */
@@ -473,47 +591,46 @@ body.blueprint {
 }
 
 /* ---------------------------------------------------------------
-   print = résumé. ctrl+p turns this page into a normal, serious,
-   entirely presentable document. the site keeps our secret.
+   print = résumé. ctrl+p swaps the whole lowercase site for the
+   real, serious, one-page résumé. the site keeps our secret.
    --------------------------------------------------------------- */
 .print-only { display: none; }
 
 @media print {
-  @page { margin: 1.7cm; }
+  @page { margin: 1.5cm; }
 
-  :root, [data-theme="dark"] {
-    --paper: #fff; --ink: #111; --ink-soft: #444; --pen: #111;
-    --card: #fff; --line: #bbb; --shadow: none; --tape: transparent; --red: transparent;
+  /* everything on screen disappears; only the résumé prints */
+  body > *:not(.print-resume) { display: none !important; }
+  body::before, body::after { display: none !important; }
+  .print-only.print-resume { display: block; }
+
+  body {
+    background: #fff;
+    color: #111;
+    font: 10pt/1.45 Georgia, "Times New Roman", serif;
   }
-  body { font-size: 10.5pt; background: #fff; }
-  body::before, body::after { display: none; }
-
-  .cord, .tool, .pencil-hud, .term, .top, .skip, .doodle, .ghost, .ghost-ping,
-  .note, .squig, .h-under, .tape, .toast, .bp-note, .spoilers, .tip::after,
-  #hello, #guestbook, #hi, .foot-read, .hi-extras, .card-note, .status-line,
-  #foot-memory { display: none !important; }
-
-  .print-only.resume-head { display: block; border-bottom: 2px solid #111; margin-bottom: 1rem; padding-bottom: 0.6rem; }
-  .resume-head h1 { margin: 0; font-family: Georgia, serif; font-size: 20pt; }
-  .resume-head p { margin: 0.15rem 0; }
-
-  /* the resume header is authored at the end of <body>; put it first */
-  body { display: flex; flex-direction: column; }
-  .resume-head { order: -1; }
-  .page { order: 1; max-width: none; padding: 0; }
-
-  section { margin-top: 1.1rem; break-inside: avoid; }
-  .h2 { font-size: 12pt; border-bottom: 1px solid #bbb; }
-  .h2::first-letter, .card h3::first-letter, .now-list li::first-letter,
-  .card p::first-letter, #about p::first-letter { text-transform: uppercase; }
-  .cards { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-  .card { transform: none; border: 1px solid #bbb; padding: 0.7rem 0.8rem; }
-  .card a { display: none; }
-  .foot { margin-top: 1.4rem; padding-top: 0.6rem; }
-  .foot p { display: none; }
-  .foot::after {
-    content: "Full interactive version at this page's URL — it does a few things paper can't.";
-    font-size: 9pt; color: #444;
+  .print-resume h1 {
+    margin: 0;
+    font: 700 19pt/1.1 Georgia, serif;
+    letter-spacing: 0.01em;
   }
-  a { text-decoration: none; color: #111; }
+  .print-resume .r-sub { margin: 2pt 0 0; font-size: 10.5pt; color: #333; }
+  .print-resume .r-contact { margin: 3pt 0 0; font-size: 9pt; color: #444; }
+  .print-resume header { border-bottom: 1.5pt solid #111; padding-bottom: 6pt; margin-bottom: 8pt; }
+  .print-resume h2 {
+    font: 700 10.5pt/1.2 Georgia, serif;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 0.75pt solid #999;
+    margin: 10pt 0 4pt;
+    padding-bottom: 1.5pt;
+  }
+  .print-resume h3 { font: 700 10pt/1.3 Georgia, serif; margin: 6pt 0 0; }
+  .print-resume .r-meta { font-style: italic; font-size: 9pt; color: #444; margin: 0 0 2pt; }
+  .print-resume p { margin: 2pt 0; }
+  .print-resume ul { margin: 2pt 0 0; padding-left: 14pt; }
+  .print-resume li { margin: 1.5pt 0; }
+  .print-resume .r-skills p { margin: 1.5pt 0; }
+  .print-resume a { color: #111; text-decoration: none; }
+  .print-resume section { break-inside: avoid; margin: 0; }
 }

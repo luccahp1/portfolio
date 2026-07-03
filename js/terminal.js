@@ -80,10 +80,16 @@
       "call me x  the site learns your name\n" +
       "lucca.*    the console api\n" +
       "spoilers   the button at the very bottom. i caved. it lists everything.\n" +
+      "the tape   it's load-bearing. tug it and see.\n" +
       "one more isn't listed. it finds you.",
   };
 
   const CHANGELOG = [
+    "v1.2 — jul 3 2026 — blueprint mode measures pixels. the cord can snap",
+    "        (sparks, flicker, one very sad sound) and gets taped back up.",
+    "        the tape is pullable — a small lucca comes to pin things back.",
+    "        speedruns get confetti and an official time. the résumé got a",
+    "        full rewrite: cat it at resume.html or just ctrl+p.",
     "v1.1 — jul 3 2026 — the site learned names, seasons, and manners.",
     "        favicon naps, lamp sass, three inks, speedrun detection, and —",
     "        fine — a spoiler button that lists every secret. i caved.",
@@ -100,7 +106,7 @@
       line("things i answer to:");
       line("  whoami · ls · cat <file> · open <place> · now · uptime");
       line("  lights · ghost · draw · blueprint · changelog · guestbook");
-      line("  call me <name> · forget · clear · exit");
+      line("  call me <name> · resume · forget · clear · exit");
       line("some commands aren't listed. that's what makes them commands.", "term-dim");
     },
     whoami() {
@@ -152,6 +158,10 @@
     draw() { close(); window.lucca?.draw(); },
     blueprint() { close(); window.lucca?.blueprint(); },
     changelog() { CHANGELOG.forEach((l) => line(l)); },
+    resume() {
+      line("fetching the serious version…");
+      window.open("resume.html", "_blank");
+    },
     guestbook() {
       const entries = document.querySelectorAll("#guestbook .guest-list li");
       const real = [...entries].filter((li) => !li.textContent.includes("nobody yet")).length;

@@ -12,13 +12,14 @@ The concept: **a site that remembers you.** Everything it knows lives in the vis
 - **The ghost** — the site records your cursor locally and replays it on your next visit as a translucent ghost labeled "you, 2 days ago". First-time visitors get Lucca's own recorded wander instead.
 - **Pencil mode** (`d`) — draw anywhere on the page. Doodles persist across visits, adapt to the theme, `z` undoes, `x` clears.
 - **Terminal** (`/`) — `help`, `whoami`, `cat secrets.txt`, `open outpace`, `sudo hire lucca`, and a permanent record for anyone who tries `rm -rf`.
-- **Blueprint mode** (Konami code) — exposes the site's construction lines and margin annotations.
-- **Print = résumé** — `Ctrl+P` reformats the entire page into a clean, professional one-page résumé.
-- **The lamp cord** — dark mode is a pull-cord in the top right, with a tiny click.
+- **Blueprint mode** (Konami code) — exposes the site's construction lines and margin annotations. Every box confesses its pixel dimensions, and whatever you hover gets measured live.
+- **Print = résumé** — `Ctrl+P` swaps the whole site for the real, professional one-page résumé (also at `resume.html`).
+- **The lamp cord** — dark mode is a pull-cord in the top right, with a tiny click. It idles with a faint sway, builds real swing momentum if you bat it with repeated hover passes, and if you ignore the warning and keep yanking, it snaps: sparks, a screen flicker, a small glass-pop sound, and a taped-up repair nine seconds later.
+- **The tape** — grab the tape holding any project card and pull. The card falls, and a very small "lucca" cursor arrives to pin it back with a thumbtack. He is not thrilled.
 - **Analog guestbook** — no database; guests email in and get hand-typed into the HTML.
 - **The spoilers** — a footer button that reveals every secret and how to trigger it. Hand-maintained.
 - **It learns your name** — `call me maple` in the terminal; greetings use it from then on.
-- Small acknowledgments (each once, politely): copy/select-all/idle toasts, a speedrun-vs-reader footer ending, seasonal margin notes, an "eavestroughs" hover tooltip, escalating Konami snark, lamp sass after four rapid pulls, three pencil inks (`c`), a favicon that naps when you leave the tab, and a birthday greeting on July 2.
+- Small acknowledgments (each once, politely): copy/select-all/idle toasts, a speedrun footer ending with your official time and paper-scrap confetti, seasonal margin notes, an "eavestroughs" hover tooltip, escalating Konami snark, three pencil inks (`c`), a favicon that naps when you leave the tab, and a birthday greeting on July 2.
 - Console API (`lucca.ghost()`, `lucca.secrets()`, `lucca.forget()`, …), tab title that misses you, humans.txt, custom 404, a view-source banner.
 
 ## Getting started
@@ -37,6 +38,7 @@ Any static host works: nginx on luccaserver, GitHub Pages, Netlify. `404.html` i
 
 ## Editing content
 
-- Copy lives directly in `index.html` (lowercase on purpose — the printed résumé re-capitalizes itself).
+- Copy lives directly in `index.html` (lowercase on purpose — printing swaps in the hidden `.print-resume` block, which has proper capitals).
+- Résumé: edit the `.print-resume` block in `index.html` and `resume.html` together; the full version with phone number lives outside the repo in `C:\Bin\Resume\2026\`.
 - Guestbook entries: add `<li>` items in the `#guestbook` section, by hand. That's the system.
 - Site birthday / changelog: `BORN` in `js/main.js`, `CHANGELOG` in `js/terminal.js`.

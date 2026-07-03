@@ -12,7 +12,7 @@
   const MAX_PTS = 700;
   const MIN_PTS = 50;
   const MIN_DUR = 8000;
-  const AUTO_DELAY = 6000;
+  const AUTO_DELAY = 2500;
   const MAX_REPLAY = 35000;
 
   const docH = () => document.documentElement.scrollHeight;
@@ -205,12 +205,14 @@
     return "…";
   }
 
-  /* ---------- auto-play, once, politely ---------- */
+  /* ---------- auto-play: soon, every visit — plus an encore for lingerers ---------- */
   if (!prefersReduced && !isTouch && innerWidth > 760) {
     setTimeout(() => {
-      if (document.hidden) return;
-      if (prev || state.visits <= 2) play(prev ? "you" : "lucca");
+      if (!document.hidden) play(prev ? "you" : "lucca");
     }, AUTO_DELAY);
+    setTimeout(() => {
+      if (!document.hidden) play(prev ? "you" : "lucca");
+    }, 150000);
   }
 
   window.__ghost = { play };
