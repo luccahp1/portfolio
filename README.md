@@ -15,8 +15,9 @@ The concept: **a site that remembers you.** Everything it knows lives in the vis
 - **Blueprint mode** (Konami code) — exposes the site's construction lines and margin annotations. Every box confesses its pixel dimensions, and whatever you hover gets measured live.
 - **Print = résumé** — `Ctrl+P` swaps the whole site for the real, professional one-page résumé (also at `resume.html`).
 - **The lamp cord** — dark mode is a pull-cord in the top right, with a tiny click. It idles with a faint sway, builds real swing momentum if you bat it with repeated hover passes, and if you ignore the warning and keep yanking, it snaps: sparks, a screen flicker, a small glass-pop sound, and a taped-up repair nine seconds later.
-- **The tape** — grab the tape holding any project card and pull. The card falls, and a very small "lucca" cursor arrives to pin it back with a thumbtack. He is not thrilled.
-- **Analog guestbook** — no database; guests email in and get hand-typed into the HTML.
+- **The tape** — grab the tape holding any project card and pull. The card falls, and a very small "lucca" cursor arrives to pin it back with a real thumbtack (cropped from a vector pack) — a different pin, spot, and angle every time. The pinned note hangs crooked with a curled, shadowed corner. He is not thrilled.
+- **The vouch card** — the guestbook, grown up. A popup form (name, email, optional company) that drafts the email in the visitor's own mail app; confirmed vouches get hand-typed into the HTML. The "role" question only exists if they type a company — friends and family never see it.
+- **Toasts happen at the scene** — popups appear near whatever triggered them (the lamp's complaints at the lamp, the tape scolding on the note), as slanted handwriting with a paper halo. Happy little mistakes, per Bob Ross.
 - **The spoilers** — a footer button that reveals every secret and how to trigger it. Hand-maintained.
 - **It learns your name** — `call me maple` in the terminal; greetings use it from then on.
 - Small acknowledgments (each once, politely): copy/select-all/idle toasts, a speedrun footer ending with your official time and paper-scrap confetti, seasonal margin notes, an "eavestroughs" hover tooltip, escalating Konami snark, three pencil inks (`c`), a favicon that naps when you leave the tab, and a birthday greeting on July 2.

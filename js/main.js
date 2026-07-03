@@ -47,12 +47,36 @@
   }
 
   let toastEl, toastTimer;
-  function toast(msg, ms = 3200) {
+  // toast(msg, ms, at) — pass at = { el, fixed?, ax?, dy?, shift? } and the note
+  // appears near where the thing actually happened, slightly crooked on purpose.
+  function toast(msg, ms = 3200, at) {
     if (!toastEl) {
       toastEl = document.createElement("div");
       toastEl.className = "toast";
       toastEl.setAttribute("role", "status");
       document.body.appendChild(toastEl);
+    }
+    toastEl.classList.remove("show");
+    toastEl.classList.toggle("anchored", !!(at && at.el));
+    toastEl.style.cssText = "";
+    toastEl.style.setProperty("--toast-rot", (Math.random() * 5 - 2.5).toFixed(1) + "deg");
+    if (at && at.el) {
+      const r = at.el.getBoundingClientRect();
+      const jx = Math.random() * 20 - 10, jy = Math.random() * 6 - 3;
+      const ax = at.ax === undefined ? 0.5 : at.ax;
+      const dy = at.dy === undefined ? -40 : at.dy;
+      if (at.fixed) {
+        toastEl.style.position = "fixed";
+        toastEl.style.left = Math.max(8, Math.min(innerWidth - 8, r.left + r.width * ax + jx)) + "px";
+        toastEl.style.top = Math.max(8, r.top + dy + jy) + "px";
+        toastEl.style.transform = "translateX(" + (at.shift || "-50%") + ")";
+      } else {
+        toastEl.style.position = "absolute";
+        toastEl.style.left = scrollX + r.left + r.width * ax + jx + "px";
+        toastEl.style.top = scrollY + r.top + dy + jy + "px";
+        toastEl.style.transform = "translateX(-50%)";
+      }
+      toastEl.style.bottom = "auto";
     }
     toastEl.textContent = msg;
     requestAnimationFrame(() => toastEl.classList.add("show"));
@@ -72,8 +96,8 @@
     if (d.getMonth() === 6 && d.getDate() === 2) {
       const age = d.getFullYear() - BORN.getFullYear();
       return age < 1
-        ? "it's this site's birthday. born today, actually. no gifts — sign the guestbook."
-        : "it's this site's birthday — " + age + " today. no gifts. sign the guestbook.";
+        ? "it's this site's birthday. born today, actually. no gifts — a vouch, maybe."
+        : "it's this site's birthday — " + age + " today. no gifts. vouches accepted.";
     }
 
     if (fresh || v === 1) {
@@ -205,6 +229,8 @@
   let cordJoked = false;
   let cordSnapped = false;
   const cordBtn = $("#cord");
+  // lamp commentary happens at the lamp, not across the room
+  const cordAt = () => ({ el: cordBtn, fixed: true, dy: 104, shift: "-78%" });
 
   // the cord idles with a tiny sway. bat it back and forth — consecutive
   // passes hit harder, and it takes a while to calm back down.
@@ -257,13 +283,13 @@
       document.documentElement.classList.add("flicker");
       setTimeout(() => document.documentElement.classList.remove("flicker"), 950);
     }
-    toast("annnd it snapped. lights are stuck like this now. hope it was worth it.", 4200);
+    toast("annnd it snapped. lights are stuck like this now. hope it was worth it.", 4200, cordAt());
     setTimeout(() => {
       cordSnapped = false;
       cordPulls = [];
       cordBtn.classList.remove("snapped");
       cordBtn.classList.add("repaired");   // the tape stays. a reminder.
-      toast("fixed it. that was my last cord, so.", 3800);
+      toast("fixed it. that was my last cord, so.", 3800, cordAt());
     }, 9000);
   }
 
@@ -274,14 +300,14 @@
     if (!state.cordPulled) {
       state.cordPulled = true;
       save();
-      toast(currentTheme() === "dark" ? "there. easier on the eyes." : "and the lights are back.");
+      toast(currentTheme() === "dark" ? "there. easier on the eyes." : "and the lights are back.", 3200, cordAt());
     }
     const t = now();
     cordPulls = cordPulls.filter((p) => t - p < 6000);
     cordPulls.push(t);
     if (!cordJoked && cordPulls.length >= 4) {
       cordJoked = true;
-      toast("the lamp is not a toy. (it is. i literally made it a toy.)", 4000);
+      toast("the lamp is not a toy. (it is. i literally made it a toy.)", 4000, cordAt());
     } else if (cordJoked && cordPulls.length >= 8) {
       snapCord();
     }
@@ -379,7 +405,7 @@
     { sel: "#hello h1", text: "44rem column. trust me.", dx: 10, dy: -34 },
     { sel: "#outpace", text: "rotate(-0.5deg) — barely, but you feel it", dx: 0, dy: -30 },
     { sel: ".tape", text: "the tape is one rectangle and a dream", dx: 60, dy: -6 },
-    { sel: "#guestbook-h", text: "guestbook backend: my inbox", dx: 180, dy: 4 },
+    { sel: "#guestbook-h", text: "vouch backend: my inbox. verification: my eyeballs", dx: 180, dy: 4 },
     { sel: ".foot", text: "the ghost you saw was real. well. local.", dx: 10, dy: -26 },
   ];
   let bpEls = [];

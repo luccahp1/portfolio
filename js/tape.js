@@ -1,5 +1,6 @@
 /* the tape. it's load-bearing, until someone tugs it.
-   then a very small lucca has to come fix things. */
+   then a very small lucca has to come fix things — with a real thumbtack,
+   somewhere slightly different every time, because he's in a hurry. */
 
 (function () {
   const site = window.__site;
@@ -27,6 +28,19 @@
     tape.addEventListener("pointercancel", drop);
   });
 
+  // where will lucca stick the pin this time? somewhere in the top band.
+  function planPin() {
+    const head = Math.random() < 0.5;
+    return {
+      src: head ? "img/pin-head.png" : "img/pin-classic.png",
+      w: head ? 32 : 26,
+      leftPct: 7 + Math.random() * 80,           // random x across the note
+      topPx: -16 + Math.random() * 32,           // random y around the top edge
+      rot: (Math.random() * 26 - 13).toFixed(1), // he does not use a level
+      tilt: ((Math.random() < 0.5 ? -1 : 1) * (0.7 + Math.random() * 2.6)).toFixed(2),
+    };
+  }
+
   function peel(tape) {
     const card = tape.closest(".card");
     if (!card || card.dataset.pinned) return;
@@ -34,17 +48,21 @@
     tape.classList.add("peeled");
     setTimeout(() => tape.remove(), prefersReduced ? 0 : 600);
     card.classList.add("fallen");
-    setTimeout(() => sendLucca(card), prefersReduced ? 150 : 900);
+    const spec = planPin();
+    setTimeout(() => sendLucca(card, spec), prefersReduced ? 150 : 900);
   }
 
-  function placePin(card) {
-    const r = card.getBoundingClientRect();
-    const pin = document.createElement("span");
+  function placePin(card, spec) {
+    const pin = document.createElement("img");
     pin.className = "pin";
-    // measured while fallen; the card rises ~13px to meet the pin
-    pin.style.left = scrollX + r.left + r.width / 2 - 7 + "px";
-    pin.style.top = scrollY + r.top - 20 + "px";
-    document.body.appendChild(pin);
+    pin.src = spec.src;
+    pin.alt = "";
+    pin.style.width = spec.w + "px";
+    pin.style.left = spec.leftPct + "%";
+    pin.style.top = spec.topPx + "px";
+    pin.style.transform = "rotate(" + spec.rot + "deg)";
+    card.appendChild(pin);                        // rides the note from now on
+    card.style.setProperty("--pin-tilt", spec.tilt + "deg");
     card.classList.remove("fallen");
     card.classList.add("pinned");
     pulls++;
@@ -52,16 +70,17 @@
       pulls === 1
         ? "hey! why you tryna destroy my website?"
         : "aw man. i lowkey gotta buy better tape.",
-      4200
+      4200,
+      { el: card, dy: -38 }
     );
   }
 
-  function sendLucca(card) {
-    if (prefersReduced) return placePin(card);
+  function sendLucca(card, spec) {
+    if (prefersReduced) return placePin(card, spec);
 
     const r = card.getBoundingClientRect();
-    const tx = scrollX + r.left + r.width / 2 - 8;
-    const ty = scrollY + r.top - 24;
+    const tx = scrollX + r.left + r.width * (spec.leftPct / 100) - 4;
+    const ty = scrollY + r.top + spec.topPx - 10;
 
     const m = document.createElement("div");
     m.className = "lmouse";
@@ -81,7 +100,7 @@
       m.style.transform = `translate3d(${fx + (tx - fx) * e}px, ${fy + (ty - fy) * e}px, 0)`;
       if (p < 1) return requestAnimationFrame(arrive);
       setTimeout(() => {
-        placePin(card);
+        placePin(card, spec);
         const t1 = performance.now();
         (function leave(t2) {
           const q = Math.min(1, (t2 - t1) / 800);

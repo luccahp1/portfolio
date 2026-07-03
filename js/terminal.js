@@ -81,10 +81,16 @@
       "lucca.*    the console api\n" +
       "spoilers   the button at the very bottom. i caved. it lists everything.\n" +
       "the tape   it's load-bearing. tug it and see.\n" +
+      "vouch      the card asks about your role only if you name a company. logic.\n" +
       "one more isn't listed. it finds you.",
   };
 
   const CHANGELOG = [
+    "v1.3 — jul 3 2026 — the thumbtacks are real now (vector pack, hand-cropped),",
+    "        they land somewhere different every time, and pinned notes hang",
+    "        crooked with a curled corner. popups happen where things happen,",
+    "        slightly slanted, as bob ross intended. the guestbook grew up:",
+    "        it's a vouch card — typing a company summons a bonus question.",
     "v1.2 — jul 3 2026 — blueprint mode measures pixels. the cord can snap",
     "        (sparks, flicker, one very sad sound) and gets taped back up.",
     "        the tape is pullable — a small lucca comes to pin things back.",
@@ -105,7 +111,7 @@
     help() {
       line("things i answer to:");
       line("  whoami · ls · cat <file> · open <place> · now · uptime");
-      line("  lights · ghost · draw · blueprint · changelog · guestbook");
+      line("  lights · ghost · draw · blueprint · changelog · vouch");
       line("  call me <name> · resume · forget · clear · exit");
       line("some commands aren't listed. that's what makes them commands.", "term-dim");
     },
@@ -116,6 +122,7 @@
       else line("name: unknown. fixable — try: call me maple", "term-dim");
       line("first seen: " + rel(Date.now() - state.firstVisit) + " ago · visits: " + state.visits);
       if (state.spoiled) line("read the spoilers: yes. no judgment. (some judgment.)", "term-dim");
+      if (state.vouched) line("vouched: yes. legend.", "term-dim");
       if (state.prankRm) line("permanent record: attempted `rm -rf /` once. we remember.", "term-dim");
       line("everything above lives in your localStorage, not on a server.", "term-dim");
     },
@@ -163,11 +170,16 @@
       window.open("resume.html", "_blank");
     },
     guestbook() {
+      line("the guestbook grew up. it's a vouching system now — same energy, more useful.");
+      line("try: vouch", "term-dim");
+    },
+    vouch() {
       const entries = document.querySelectorAll("#guestbook .guest-list li");
       const real = [...entries].filter((li) => !li.textContent.includes("nobody yet")).length;
-      line("entries: " + real + " (hand-counted, obviously)");
-      html('no backend. <a href="mailto:luccaprada25@gmail.com?subject=guestbook">email me</a> ' +
-           "and i hand-type your name into the html. 100% uptime since forever.");
+      line("vouches so far: " + real + " (hand-verified, obviously)");
+      line("opening the vouch card…");
+      close();
+      window.__vouch?.open();
     },
     forget() { line(window.lucca?.forget() || "hm."); },
     clear() { body.textContent = ""; },

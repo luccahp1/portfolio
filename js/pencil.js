@@ -40,7 +40,7 @@
     curCol = (curCol + 1) % INKS.length;
     state.pencilCol = curCol;
     save();
-    toast(INKS[curCol] + ".");
+    toast(INKS[curCol] + ".", 1600, { el: btn, fixed: true, dy: -30 });
   }
 
   function fit() {
@@ -157,7 +157,7 @@
       if (!state.penciled) {
         state.penciled = true;
         save();
-        toast("pencil on. the page is yours — it keeps what you draw.");
+        toast("pencil on. the page is yours — it keeps what you draw.", 3600, { el: btn, fixed: true, dy: -44, ax: 1, shift: "-20%" });
       }
     }
   }
@@ -175,7 +175,7 @@
       strokes = [];
       redraw();
       persist();
-      toast("cleared. like it never happened.");
+      toast("cleared. like it never happened.", 3200, { el: btn, fixed: true, dy: -30 });
     }
   });
 

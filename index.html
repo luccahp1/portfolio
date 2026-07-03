@@ -139,14 +139,16 @@
       <aside class="note note-left" id="season-note" aria-hidden="true" hidden></aside>
     </section>
 
-    <!-- ============ guestbook ============ -->
+    <!-- ============ vouches (the guestbook grew up) ============ -->
     <section id="guestbook" aria-labelledby="guestbook-h">
-      <h2 id="guestbook-h" class="display h2">guestbook <span class="hand h2-aside">(analog)</span><span class="h-under" aria-hidden="true"></span></h2>
-      <p>no database. no backend. <a href="mailto:luccaprada25@gmail.com?subject=guestbook&body=hi lucca, put me in the guestbook. sign me as:">email me</a> something nice — or weird —
-      and i will hand-type your name into this html file. that's the whole system.
-      it has never gone down.</p>
-      <ul class="guest-list hand">
-        <!-- guests get added here, one <li> each. yes, by hand. it's nicer that way. -->
+      <h2 id="guestbook-h" class="display h2">vouches <span class="hand h2-aside">(verified by hand)</span><span class="h-under" aria-hidden="true"></span></h2>
+      <p>if something here made you smile — or you've actually worked with me — you can vouch
+      for me. twenty seconds, four questions, two of them optional. no database: the card
+      drafts an email in <em>your</em> mail app, i read every one, and then i hand-type it
+      below. that's the verification process. it has never been hacked.</p>
+      <p><button class="vouch-btn hand" id="vouch-btn">i'd vouch for this guy →</button></p>
+      <ul class="guest-list hand" id="vouch-list">
+        <!-- vouches get added here by hand: name — company/role — one good line. -->
         <li>— nobody yet. the html is ready when you are.</li>
       </ul>
     </section>
@@ -194,7 +196,8 @@
             <li><strong>blueprint mode</strong> — <kbd>↑</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd><kbd>←</kbd><kbd>→</kbd><kbd>b</kbd><kbd>a</kbd>. the site shows its bones — every box confesses its pixels, and whatever you hover gets measured live. do it twice, it gets chattier.</li>
             <li><strong>the résumé trick</strong> — <kbd>ctrl</kbd>+<kbd>p</kbd>. the lowercase disappears and paper gets my real, serious, one-page résumé. also lives at <a href="resume.html">resume.html</a>.</li>
             <li><strong>the lamp</strong> — the cord hanging top-right. pull for lights. it clicks. pull it four times fast and it has opinions. ignore the warning and keep yanking… it snaps. sparks, flicker, the works. (i fix it. eventually. the repair tape stays.)</li>
-            <li><strong>the tape</strong> — it's holding the project cards up. grab one and pull it off. the card falls, and a very small lucca has to come pin it back. he will not be thrilled.</li>
+            <li><strong>the tape</strong> — it's holding the project cards up. grab one and pull it off. the card falls, and a very small lucca comes to pin it back with a real thumbtack — a different pin, spot, and angle every time. he does not use a level.</li>
+            <li><strong>the vouch card</strong> — the button in the vouches section. typing a company summons a bonus question out of thin air. that's not a bug, that's logic.</li>
             <li><strong>leave &amp; come back</strong> — the tab title misses you, and the favicon lies down for a nap while you're gone.</li>
             <li><strong>the ending changes</strong> — speedrun to the bottom and the footer clocks your official time, with confetti. read slowly and it thanks you properly.</li>
             <li><strong>small acknowledgments</strong> — copy some text. select all. go idle for a minute. hover the word "eavestroughs". the site notices things, politely, once.</li>
@@ -299,10 +302,37 @@
     </div>
   </div>
 
+  <!-- the vouch card. it only asks about your role if you give it a reason to. -->
+  <div class="vouch-wrap" id="vouch-wrap" hidden>
+    <div class="vouch-scrim" data-close></div>
+    <form class="vouch-card" id="vouch-form" role="dialog" aria-modal="true" aria-labelledby="vouch-title">
+      <img id="vouch-pin" src="img/pin-classic.png" alt="" width="30">
+      <p class="hand vouch-title" id="vouch-title">vouch for lucca</p>
+      <p class="mono micro">this drafts an email in your own mail app. nothing leaves this page until you hit send there.</p>
+      <label for="v-name">your name</label>
+      <input id="v-name" required maxlength="60" autocomplete="name">
+      <label for="v-email">your email</label>
+      <input id="v-email" type="email" required maxlength="80" autocomplete="email">
+      <label for="v-company">company <span class="v-opt">(optional)</span></label>
+      <input id="v-company" maxlength="80" autocomplete="organization">
+      <div id="v-role-wrap" hidden>
+        <p class="hand v-role-note">oh, a company! ok, one more then — this question did not
+        exist five seconds ago. friends and family never see it. efficiency.</p>
+        <label for="v-role">your role there <span class="v-opt">(also optional)</span></label>
+        <input id="v-role" maxlength="80" autocomplete="organization-title">
+      </div>
+      <div class="v-actions">
+        <button type="submit" class="vouch-btn hand">send the vouch</button>
+        <button type="button" class="linkish mono" data-close>never mind</button>
+      </div>
+    </form>
+  </div>
+
   <script src="js/main.js" defer></script>
   <script src="js/ghost.js" defer></script>
   <script src="js/pencil.js" defer></script>
   <script src="js/terminal.js" defer></script>
   <script src="js/tape.js" defer></script>
+  <script src="js/vouch.js" defer></script>
 </body>
 </html>
