@@ -27,6 +27,22 @@
     return getComputedStyle(document.body).color;
   }
 
+  /* three inks on the desk: graphite, the blue pen, the margin red */
+  const INKS = ["graphite", "ballpoint", "margin red"];
+  let curCol = state.pencilCol || 0;
+  function strokeColor(col) {
+    const styles = getComputedStyle(document.documentElement);
+    if (col === 1) return styles.getPropertyValue("--pen").trim() || inkColor();
+    if (col === 2) return styles.getPropertyValue("--red").trim() || inkColor();
+    return inkColor();
+  }
+  function cycleInk() {
+    curCol = (curCol + 1) % INKS.length;
+    state.pencilCol = curCol;
+    save();
+    toast(INKS[curCol] + ".");
+  }
+
   function fit() {
     const w = document.documentElement.clientWidth;
     const h = document.documentElement.scrollHeight;
@@ -43,7 +59,7 @@
   function drawStroke(s) {
     const pts = s.pts;
     if (pts.length < 2) return;
-    ctx.strokeStyle = inkColor();
+    ctx.strokeStyle = strokeColor(s.col);
     ctx.globalAlpha = 0.82;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
@@ -83,6 +99,7 @@
     if (!d || !d.strokes || !d.strokes.length) return;
     const r = d.w ? document.documentElement.clientWidth / d.w : 1;
     strokes = d.strokes.map((s) => ({
+      col: s.col,
       pts: s.pts.map((p) => ({ x: p.x * r, y: p.y * r, w: p.w })),
     }));
     redraw();
@@ -97,7 +114,7 @@
     if (!active) return;
     canvas.setPointerCapture(e.pointerId);
     const p = pos(e);
-    drawing = { pts: [{ ...p, w: 2 }], last: p, lastT: performance.now() };
+    drawing = { col: curCol, pts: [{ ...p, w: 2 }], last: p, lastT: performance.now() };
     strokes.push(drawing);
     e.preventDefault();
   });
@@ -115,7 +132,7 @@
     drawing.last = p;
     drawing.lastT = t;
     const n = drawing.pts.length;
-    drawStroke({ pts: drawing.pts.slice(n - 2) });
+    drawStroke({ col: drawing.col, pts: drawing.pts.slice(n - 2) });
   });
 
   function endStroke() {
@@ -148,10 +165,11 @@
   btn?.addEventListener("click", () => toggle());
 
   document.addEventListener("keydown", (e) => {
-    if (e.target.matches("input, textarea") || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!(e.target instanceof Element) || e.target.matches("input, textarea") || e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.key === "d") toggle();
     else if (!active) return;
     else if (e.key === "Escape") toggle(false);
+    else if (e.key === "c") cycleInk();
     else if (e.key === "z") { strokes.pop(); redraw(); persist(); }
     else if (e.key === "x") {
       strokes = [];

@@ -1,4 +1,17 @@
 <!doctype html>
+<!--
+  hello, view-source person. good instincts.
+
+       __
+      /  \    this is supposed to be a pencil.
+     |    |   ascii is harder than it looks.
+      \__/
+
+  everything in here is handwritten. no build step, no framework —
+  what you see is what i typed. there's a spoiler button at the very
+  bottom of the page that lists every secret, but honestly?
+  `cat secrets.txt` in the terminal (press /) hits different.
+-->
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -8,7 +21,7 @@
   <meta name="theme-color" content="#141110" media="(prefers-color-scheme: dark)">
   <meta name="description" content="lucca prada builds small software for real businesses. this site remembers you, lets you draw on it, and prints as a résumé.">
   <meta name="author" content="Lucca Prada">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" id="favicon">
   <link rel="author" href="humans.txt">
   <title>lucca prada — small software, made by hand</title>
 
@@ -57,7 +70,7 @@
       <h2 id="now-h" class="display h2">now<span class="h-under" aria-hidden="true"></span></h2>
       <ul class="now-list">
         <li>building <strong>atrio</strong> and <strong>outpace</strong> — two ai tools for small service businesses</li>
-        <li>pitching them to a real eavestroughs company. a live call. no slides, just the working thing</li>
+        <li>pitching them to a real <span class="tip" tabindex="0" data-tip="canadian for rain gutters. we are a proud people.">eavestroughs</span> company. a live call. no slides, just the working thing</li>
         <li>keeping the server in my closet fed and warm</li>
       </ul>
       <p class="mono micro">last updated jul 2, 2026 — by hand, like everything here</p>
@@ -121,8 +134,9 @@
       <p>i like owning the whole thing — the pitch, the code, the deploy, the 2am when it breaks.
       i build with ai every day, and i still think software should feel like a person made it.
       that's the whole philosophy, really: small tools, real businesses, fingerprints left on.</p>
-      <p>i live somewhere north enough that "eavestroughs" is a normal word.</p>
+      <p>i live somewhere north enough that "<span class="tip" tabindex="0" data-tip="canadian for rain gutters. we are a proud people.">eavestroughs</span>" is a normal word.</p>
       <aside class="note note-right" aria-hidden="true">also: coffee.</aside>
+      <aside class="note note-left" id="season-note" aria-hidden="true" hidden></aside>
     </section>
 
     <!-- ============ guestbook ============ -->
@@ -162,6 +176,32 @@
         <button class="linkish mono" id="open-changelog">changelog</button> ·
         there are secrets on this page. <span class="nowrap">the console knows.</span>
       </p>
+
+      <!-- the spoilers. hand-maintained, like everything. -->
+      <div class="spoilers">
+        <button class="spoiler-btn hand" id="spoiler-btn" aria-expanded="false" aria-controls="spoiler-panel">
+          ok fine — reveal every secret
+        </button>
+        <div class="spoiler-panel" id="spoiler-panel" hidden>
+          <span class="tape" aria-hidden="true"></span>
+          <p class="hand spoiler-title">the complete map of secrets. last chance to find them yourself.</p>
+          <ul class="spoiler-list">
+            <li><strong>the ghost</strong> — this site records your cursor (locally, never sent anywhere). come back tomorrow and watch yourself drift by, labeled "you, 1 day ago". first visit? you got mine instead. summon one anytime: type <kbd>ghost</kbd> in the terminal.</li>
+            <li><strong>the pencil</strong> — press <kbd>d</kbd>, then draw anywhere. <kbd>c</kbd> changes ink, <kbd>z</kbd> undoes, <kbd>x</kbd> erases everything, <kbd>esc</kbd> puts it down. your art survives reloads.</li>
+            <li><strong>the terminal</strong> — press <kbd>/</kbd>. start with <code>help</code>, snoop with <code>cat secrets.txt</code>, finish with <code>sudo hire lucca</code>. (<code>rm -rf</code> goes on your permanent record. permanently.)</li>
+            <li><strong>tell it your name</strong> — in the terminal: <code>call me maple</code>. the site greets you by name forever after. <code>lucca.forget()</code> if you regret everything.</li>
+            <li><strong>blueprint mode</strong> — <kbd>↑</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd><kbd>←</kbd><kbd>→</kbd><kbd>b</kbd><kbd>a</kbd>. the site shows its bones and measurements. do it twice, it gets chattier.</li>
+            <li><strong>the résumé trick</strong> — <kbd>ctrl</kbd>+<kbd>p</kbd>. the lowercase disappears and paper gets a perfectly serious résumé. the site keeps our secret.</li>
+            <li><strong>the lamp</strong> — the cord hanging top-right. pull for lights. it clicks. pull it four times fast and it has opinions.</li>
+            <li><strong>leave &amp; come back</strong> — the tab title misses you, and the favicon lies down for a nap while you're gone.</li>
+            <li><strong>the ending changes</strong> — speedrun to the bottom and the footer congratulates your world-record pace. read slowly and it thanks you properly.</li>
+            <li><strong>small acknowledgments</strong> — copy some text. select all. go idle for a minute. hover the word "eavestroughs". the site notices things, politely, once.</li>
+            <li><strong>the console</strong> — open devtools. there's a note waiting, and an api: <code>lucca.ghost()</code>, <code>lucca.lights()</code>, <code>lucca.blueprint()</code>, <code>lucca.forget()</code>.</li>
+            <li><strong>for completionists</strong> — <a href="humans.txt">humans.txt</a>, the 404 page (make up a url), and a note at the top of view-source.</li>
+          </ul>
+          <p class="hand spoiler-end">that's all of them. probably. this list is hand-maintained, so if i add a secret and forget to write it down… that's just a secret again.</p>
+        </div>
+      </div>
     </footer>
   </main>
 
@@ -176,7 +216,7 @@
   <button class="tool pencil-btn" id="pencil-btn" aria-label="draw on this page (press d)" title="draw on this page (d)">
     <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 20 L5.5 15.5 L16.5 4.5 A 1.6 1.6 0 0 1 19.5 7.5 L8.5 18.5 Z M14.8 6.2 L17.8 9.2"/></svg>
   </button>
-  <div class="pencil-hud mono" id="pencil-hud" hidden>pencil on — <kbd>esc</kbd> stop · <kbd>z</kbd> undo · <kbd>x</kbd> clear</div>
+  <div class="pencil-hud mono" id="pencil-hud" hidden>pencil on — <kbd>esc</kbd> stop · <kbd>c</kbd> ink · <kbd>z</kbd> undo · <kbd>x</kbd> clear</div>
 
   <!-- terminal toggle (mostly for touch screens) -->
   <button class="tool term-btn mono" id="term-btn" aria-label="open the terminal (press /)" title="terminal (/)">›_</button>

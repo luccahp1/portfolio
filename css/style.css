@@ -364,6 +364,84 @@ body.blueprint {
   pointer-events: none;
 }
 
+/* ---------- hover tooltip (the eavestroughs clause) ---------- */
+.tip {
+  border-bottom: 1px dotted var(--ink-soft);
+  cursor: help;
+  position: relative;
+}
+.tip::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: 1.7em; left: 50%;
+  transform: translateX(-50%) rotate(-1.2deg);
+  width: max-content; max-width: 15rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  padding: 0.1rem 0.65rem;
+  border-radius: 6px;
+  font-family: "Caveat", "Segoe Script", cursive;
+  font-size: 1.1rem; line-height: 1.25;
+  color: var(--ink-soft);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 12;
+}
+.tip:hover::after, .tip:focus-visible::after { opacity: 1; }
+
+/* ---------- the spoilers ---------- */
+.spoilers { margin-top: 2.2rem; }
+.spoiler-btn {
+  background: var(--card);
+  border: 1px dashed var(--ink-soft);
+  border-radius: 8px;
+  color: var(--ink-soft);
+  font-size: 1.25rem;
+  padding: 0.35rem 1.1rem;
+  cursor: pointer;
+  transform: rotate(-0.8deg);
+  transition: transform 0.2s, color 0.2s, border-color 0.2s;
+}
+.spoiler-btn:hover { transform: rotate(0.8deg) translateY(-1px); color: var(--pen); border-color: var(--pen-soft); }
+.spoiler-panel {
+  position: relative;
+  margin-top: 1.4rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  box-shadow: var(--shadow);
+  padding: 1.6rem 1.4rem 1.1rem;
+  transform: rotate(0.3deg);
+}
+.spoiler-title { margin: 0 0 0.8rem; font-size: 1.4rem; }
+.spoiler-list { margin: 0; padding-left: 1.2rem; font-size: 0.92rem; }
+.spoiler-list li { margin: 0.55rem 0; }
+.spoiler-list li::marker { content: "✎ "; color: var(--pen); }
+.spoiler-list code {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.85em;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0.05em 0.35em;
+}
+.spoiler-end { margin: 0.9rem 0 0; font-size: 1.2rem; }
+
+/* the cord sways if you hover near it */
+@keyframes sway {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(2.2deg); }
+  70% { transform: rotate(-2deg); }
+}
+.cord:hover svg { animation: sway 1.4s ease-in-out infinite; transform-origin: top center; }
+
+/* about's seasonal margin note sits lower than coffee */
+@media (min-width: 1150px) {
+  #about .note-left { top: 1rem; }
+}
+
 /* toast for little announcements */
 .toast {
   position: fixed; left: 50%; bottom: 4.4rem; z-index: 40;
@@ -411,7 +489,7 @@ body.blueprint {
   body::before, body::after { display: none; }
 
   .cord, .tool, .pencil-hud, .term, .top, .skip, .doodle, .ghost, .ghost-ping,
-  .note, .squig, .h-under, .tape, .toast, .bp-note,
+  .note, .squig, .h-under, .tape, .toast, .bp-note, .spoilers, .tip::after,
   #hello, #guestbook, #hi, .foot-read, .hi-extras, .card-note, .status-line,
   #foot-memory { display: none !important; }
 

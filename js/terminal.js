@@ -3,7 +3,7 @@
 (function () {
   const site = window.__site;
   if (!site) return;
-  const { state, save, rel, BORN } = site;
+  const { state, save, rel, BORN, setName } = site;
 
   const term = document.getElementById("term");
   const body = document.getElementById("term-body");
@@ -52,7 +52,8 @@
     exec("changelog");
   });
   document.addEventListener("keydown", (e) => {
-    if ((e.key === "/" || e.key === "`") && term.hidden && !e.target.matches("input, textarea") &&
+    const inField = e.target instanceof Element && e.target.matches("input, textarea");
+    if ((e.key === "/" || e.key === "`") && term.hidden && !inField &&
         !e.ctrlKey && !e.metaKey && !e.altKey) {
       e.preventDefault();
       open();
@@ -72,15 +73,20 @@
       "pitching them to a real eavestroughs company on a live call.\n" +
       "feeding the closet server.",
     "secrets.txt":
-      "d        pencil mode\n" +
-      "/        you're soaking in it\n" +
-      "konami   blueprints\n" +
-      "ctrl+p   the résumé trick\n" +
-      "lucca.*  the console api\n" +
+      "d          pencil mode (c cycles inks)\n" +
+      "/          you're soaking in it\n" +
+      "konami     blueprints\n" +
+      "ctrl+p     the résumé trick\n" +
+      "call me x  the site learns your name\n" +
+      "lucca.*    the console api\n" +
+      "spoilers   the button at the very bottom. i caved. it lists everything.\n" +
       "one more isn't listed. it finds you.",
   };
 
   const CHANGELOG = [
+    "v1.1 — jul 3 2026 — the site learned names, seasons, and manners.",
+    "        favicon naps, lamp sass, three inks, speedrun detection, and —",
+    "        fine — a spoiler button that lists every secret. i caved.",
     "v1.0 — jul 2 2026 — site is born. immediately gains object permanence:",
     "        it remembers visits, keeps doodles, and replays your last cursor.",
     "        no frameworks were consulted.",
@@ -94,16 +100,25 @@
       line("things i answer to:");
       line("  whoami · ls · cat <file> · open <place> · now · uptime");
       line("  lights · ghost · draw · blueprint · changelog · guestbook");
-      line("  forget · clear · exit");
+      line("  call me <name> · forget · clear · exit");
       line("some commands aren't listed. that's what makes them commands.", "term-dim");
     },
     whoami() {
       const n = 1000 + (state.firstVisit % 8999);
       line("visitor #" + n + " (self-issued, non-transferable)");
+      if (state.name) line("answers to: " + state.name);
+      else line("name: unknown. fixable — try: call me maple", "term-dim");
       line("first seen: " + rel(Date.now() - state.firstVisit) + " ago · visits: " + state.visits);
+      if (state.spoiled) line("read the spoilers: yes. no judgment. (some judgment.)", "term-dim");
       if (state.prankRm) line("permanent record: attempted `rm -rf /` once. we remember.", "term-dim");
       line("everything above lives in your localStorage, not on a server.", "term-dim");
     },
+    hi() {
+      line(state.name
+        ? "hi, " + state.name + ". always nice when you stop by."
+        : "hi. you didn't have to greet a terminal, but you did. noted (favorably).");
+    },
+    hello() { commands.hi(); },
     ls() {
       line(sections.join("  "));
       line(Object.keys(files).join("  "));
@@ -138,6 +153,9 @@
     blueprint() { close(); window.lucca?.blueprint(); },
     changelog() { CHANGELOG.forEach((l) => line(l)); },
     guestbook() {
+      const entries = document.querySelectorAll("#guestbook .guest-list li");
+      const real = [...entries].filter((li) => !li.textContent.includes("nobody yet")).length;
+      line("entries: " + real + " (hand-counted, obviously)");
       html('no backend. <a href="mailto:luccaprada25@gmail.com?subject=guestbook">email me</a> ' +
            "and i hand-type your name into the html. 100% uptime since forever.");
     },
@@ -165,6 +183,12 @@
     const [cmd, ...rest] = t.split(/\s+/);
     const arg = rest.join(" ");
 
+    if (t.toLowerCase().startsWith("call me")) {
+      const name = setName(t.slice(7));
+      return name
+        ? line("ok, " + name + ". i'll remember. (locally. always locally.)")
+        : line("call you… nothing? bold. try: call me maple");
+    }
     if (t === "sudo hire lucca") {
       line("checking credentials… you seem great.");
       html('ok. it\'s done on my end — yours is one email: ' +

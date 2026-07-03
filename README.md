@@ -16,7 +16,10 @@ The concept: **a site that remembers you.** Everything it knows lives in the vis
 - **Print = résumé** — `Ctrl+P` reformats the entire page into a clean, professional one-page résumé.
 - **The lamp cord** — dark mode is a pull-cord in the top right, with a tiny click.
 - **Analog guestbook** — no database; guests email in and get hand-typed into the HTML.
-- Console API (`lucca.ghost()`, `lucca.forget()`, …), tab title that misses you, humans.txt, custom 404.
+- **The spoilers** — a footer button that reveals every secret and how to trigger it. Hand-maintained.
+- **It learns your name** — `call me maple` in the terminal; greetings use it from then on.
+- Small acknowledgments (each once, politely): copy/select-all/idle toasts, a speedrun-vs-reader footer ending, seasonal margin notes, an "eavestroughs" hover tooltip, escalating Konami snark, lamp sass after four rapid pulls, three pencil inks (`c`), a favicon that naps when you leave the tab, and a birthday greeting on July 2.
+- Console API (`lucca.ghost()`, `lucca.secrets()`, `lucca.forget()`, …), tab title that misses you, humans.txt, custom 404, a view-source banner.
 
 ## Getting started
 
