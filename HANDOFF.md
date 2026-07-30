@@ -1,6 +1,14 @@
 # Handoff - portfolio
 
 ## Current state
+- v1.6: **the pile** (`js/rolo.js`, `.rolo-*` in `css/style.css`). the four project cards are a
+  stack on a desk instead of a 2x2 grid. front card is readable, three lean up behind it. flip via
+  pencil-arrow buttons, a thumbtack row, `←`/`→` while focus is inside the pile, or a horizontal
+  drag/swipe. wraps around. a handwritten "or spread all four out on the table" toggle drops back to
+  the original grid (that's also the a11y escape hatch, since non-front cards are `inert`).
+  each card is wrapped in a `.rolo-slot`; js sets `--d` per slot (0 = front) and one CSS rule turns
+  depth into transform/opacity/z-index, so a flip is just re-numbering and letting transitions run.
+  nothing persists - a reload always deals card 1.
 - v1.5 headline: **the cord snaps twice.** First snap = the v1.4 gag (stub, sparks, flicker, 9s tape repair - the repair toast now hints at what a second snap does). Second snap = `condemnCord()` in `js/main.js`: the rope is restored visually but duct-taped static (`.ducttape` x2 on the button, button `disabled`), and a real wall switch (`#wallswitch`, drill-in animation) appears beside it. The switch clicks the theme like a normal house. Terminal command `rewire` undoes all of it and resets the break counter. None of this persists - a reload always gives a fresh cord, on purpose.
 - v1.5 also:
   - **`race`** terminal command: scrolls to top, locks scrolling (html overflow + wheel/touch/key blockers), shows a full-width 400px semi-transparent checkered banner, counts 3-2-1-GO with blips, then unlocks and restarts the speedrun clock (`rearmSpeedrun`) with `raceRun = true`. A race finish ALWAYS celebrates (confetti + time), regardless of how long it took - unlike a passive speedrun, which only fires inside the time window. `finishLine()` shows the current time and the saved best, and updates `state.raceBest` (persisted - a legit highscore, not a physics slider) when beaten. `whoami` surfaces the best too.
@@ -30,6 +38,18 @@
 
 ## Notes / gotchas
 - House style: no em dashes anywhere in this repo - use plain hyphens. Same for anything new you write into it.
+- The pile's transforms live on `.rolo-slot`, NEVER on `.card`. `.card`'s transform already has two
+  owners (`.tilt-a`/`.tilt-b` and the tape incident's `.fallen`/`.pinned`) and a third would fight
+  them. If you need to move a card, move its slot.
+- `rolo.js` binds `←`/`→` on the pile and its controls only, never on document. Bound globally they
+  would feed junk to the konami blueprint egg in `main.js`, which listens for arrows on the page.
+- `.cards.rolo-on` gets a js-measured `min-height` (the tallest card) so flipping never makes the page
+  jump. It is re-measured on resize and on `document.fonts.ready`, because Fraunces/Caveat land late
+  and change every card's height when they do. A card is full width in the pile and half width in the
+  grid, so measuring before `.rolo-on` is applied gives the wrong number.
+- Testing note: in a hidden/non-compositing browser tab, transitions and rAF are frozen, so
+  `getComputedStyle(...).transform` reads the pre-transition value and `.fallen`/`.pinned` look
+  broken when they are fine. Inject `transition: none !important` before asserting on transforms.
 - The physics sliders (`physics` command) must NEVER persist to localStorage. That is a design requirement, not an oversight: if a visitor breaks the cord with the sliders, a reload must always fix it.
 - The cord's second-break state (duct tape + wall switch) is session-only for the same reason.
 - `save()` in main.js is shared by every module through `window.__site` and goes inert once `forget` runs (the `forgotten` latch). Don't add a new localStorage write path that bypasses it.

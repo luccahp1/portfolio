@@ -82,45 +82,56 @@
       <h2 id="work-h" class="display h2">things i've built<span class="h-under" aria-hidden="true"></span></h2>
       <p class="mono micro status-line">first two: currently being pitched to an actual eavestroughs company. wish me luck.</p>
 
-      <div class="cards">
-        <article class="card tilt-a" id="outpace">
-          <span class="tape" aria-hidden="true"></span>
-          <h3 class="display">outpace</h3>
-          <p>answers a business's new leads in minutes, in the owner's own voice, and follows up
-          until a human replies. built for trades that leak leads on nights and weekends -
-          because the first company to answer usually wins the job.</p>
-          <p class="mono stack">next.js · claude · turso</p>
-          <p class="hand card-note">the hard part wasn't the ai. it was teaching it to be polite about following up.</p>
-        </article>
+      <!-- the pile. four index cards on a desk; the front one is the one you're
+           reading. js turns this into a flippable stack - without it, or with
+           `spread` on, it's just a plain grid and everything stays readable. -->
+      <div class="cards" id="cards">
+        <div class="rolo-slot">
+          <article class="card tilt-a" id="outpace">
+            <span class="tape" aria-hidden="true"></span>
+            <h3 class="display">outpace</h3>
+            <p>answers a business's new leads in minutes, in the owner's own voice, and follows up
+            until a human replies. built for trades that leak leads on nights and weekends -
+            because the first company to answer usually wins the job.</p>
+            <p class="mono stack">next.js · claude · turso</p>
+            <p class="hand card-note">the hard part wasn't the ai. it was teaching it to be polite about following up.</p>
+          </article>
+        </div>
 
-        <article class="card tilt-b" id="atrio">
-          <span class="tape" aria-hidden="true"></span>
-          <h3 class="display">atrio</h3>
-          <p>an ai front desk. a phone receptionist that learns a business by reading its website,
-          then answers calls like it has worked there for years. no menus, no "press 2".</p>
-          <p class="mono stack">next.js · vapi · claude</p>
-          <p class="hand card-note">yes, it's a robot that answers phones. no, it will not put you on hold.</p>
-        </article>
+        <div class="rolo-slot">
+          <article class="card tilt-b" id="atrio">
+            <span class="tape" aria-hidden="true"></span>
+            <h3 class="display">atrio</h3>
+            <p>an ai front desk. a phone receptionist that learns a business by reading its website,
+            then answers calls like it has worked there for years. no menus, no "press 2".</p>
+            <p class="mono stack">next.js · vapi · claude</p>
+            <p class="hand card-note">yes, it's a robot that answers phones. no, it will not put you on hold.</p>
+          </article>
+        </div>
 
-        <article class="card tilt-a" id="server">
-          <span class="tape" aria-hidden="true"></span>
-          <h3 class="display">luccaserver</h3>
-          <p>an ubuntu box in my closet that hosts my experiments. nginx, tailscale, systemd,
-          and one very determined little fan. everything i build eventually moves in.</p>
-          <p class="mono stack">ubuntu · nginx · a closet</p>
-          <p class="hand card-note">uptime is a collaboration between me and the power grid.</p>
-        </article>
+        <div class="rolo-slot">
+          <article class="card tilt-a" id="server">
+            <span class="tape" aria-hidden="true"></span>
+            <h3 class="display">luccaserver</h3>
+            <p>an ubuntu box in my closet that hosts my experiments. nginx, tailscale, systemd,
+            and one very determined little fan. everything i build eventually moves in.</p>
+            <p class="mono stack">ubuntu · nginx · a closet</p>
+            <p class="hand card-note">uptime is a collaboration between me and the power grid.</p>
+          </article>
+        </div>
 
-        <article class="card tilt-b" id="site">
-          <span class="tape" aria-hidden="true"></span>
-          <h3 class="display">this site</h3>
-          <p>the thing you're reading. html, css and javascript written by hand - no framework,
-          no template, no build step. it remembers your visits, keeps your doodles, and haunts
-          you with your own cursor. all of it stays in <em>your</em> browser.</p>
-          <p class="mono stack">html · css · js · nothing else</p>
-          <p class="hand card-note">even the wobbles are on purpose. most of them.</p>
-          <p><a href="https://github.com/luccahp1/portfolio">read the source →</a></p>
-        </article>
+        <div class="rolo-slot">
+          <article class="card tilt-b" id="site">
+            <span class="tape" aria-hidden="true"></span>
+            <h3 class="display">this site</h3>
+            <p>the thing you're reading. html, css and javascript written by hand - no framework,
+            no template, no build step. it remembers your visits, keeps your doodles, and haunts
+            you with your own cursor. all of it stays in <em>your</em> browser.</p>
+            <p class="mono stack">html · css · js · nothing else</p>
+            <p class="hand card-note">even the wobbles are on purpose. most of them.</p>
+            <p><a href="https://github.com/luccahp1/portfolio">read the source →</a></p>
+          </article>
+        </div>
       </div>
 
       <aside class="note note-left" aria-hidden="true">
@@ -202,6 +213,7 @@
             <li><strong>the lamp</strong> - the cord hanging top-right. it's a real rope: grab it and pull, any direction. it stretches, and when the tension is right the switch gives. swipe through it and it swings. pull it four times fast and it has opinions. ignore the warning and keep yanking… it snaps. sparks, flicker, the works. (i fix it. eventually. the repair tape stays.)</li>
             <li><strong>the second snap</strong> - break the cord again after the repair and i stop being nice: duct tape, a real wall switch, zero physics. the terminal's <code>rewire</code> command earns you the string back. i can't believe i added that.</li>
             <li><strong>the physics sliders</strong> - type <code>physics</code> in the terminal. gravity, damping, stretch, segments - the cord obeys in real time. nothing you set is ever saved, so break it with total confidence.</li>
+            <li><strong>the pile</strong> - the project cards are a stack on a desk, not a grid. flip through with the pencil arrows, the thumbtacks under them, the <kbd>←</kbd> <kbd>→</kbd> keys, or just grab a card and fling it sideways. if you would rather see all four at once, there's a line under the pile that spreads them out on the table.</li>
             <li><strong>the tape</strong> - it's holding the project cards up. grab one and pull it off. the card falls, and a very small lucca comes to pin it back with a real thumbtack - a different pin, spot, and angle every time. he does not use a level.</li>
             <li><strong>the vouch card</strong> - the button in the vouches section. typing a company summons a bonus question out of thin air. that's not a bug, that's logic.</li>
             <li><strong>leave &amp; come back</strong> - the tab title misses you, and the favicon lies down for a nap while you're gone.</li>
@@ -341,5 +353,6 @@
   <script src="js/terminal.js" defer></script>
   <script src="js/tape.js" defer></script>
   <script src="js/vouch.js" defer></script>
+  <script src="js/rolo.js" defer></script>
 </body>
 </html>

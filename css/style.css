@@ -206,6 +206,125 @@ h1.display {
 .stack { color: var(--ink-soft); }
 .card-note { color: var(--ink-soft); font-size: 1.15rem; }
 
+/* ---------- the pile ----------
+   four index cards stacked on a desk. rolo.js adds .rolo-on and drives each
+   slot's --d (0 = the one you're reading, 3 = bottom of the pile). every
+   transform lives on the SLOT, never the card: the card's own transform is
+   spoken for by tilt-a/tilt-b and by the tape incident (.fallen/.pinned).
+   no js, or "spread them out" on, and this is the plain grid it always was. */
+.rolo-slot { position: relative; }
+
+.cards.rolo-on {
+  display: block;
+  position: relative;
+  margin-top: 2.4rem;          /* room for the back of the pile to lean up */
+  touch-action: pan-y;         /* horizontal is ours, vertical is the page's */
+  --step-x: 17px;              /* how far each card behind leans right */
+  --step-y: -11px;             /* and up */
+}
+/* a narrow screen cannot spare 51px of lean, or the page scrolls sideways */
+@media (max-width: 560px) {
+  .cards.rolo-on { --step-x: 8px; --step-y: -6px; }
+}
+
+.cards.rolo-on .rolo-slot {
+  --d: 0;
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: calc(20 - var(--d));
+  opacity: calc(1 - var(--d) * 0.28);
+  transform:
+    translate3d(calc(var(--d) * var(--step-x)), calc(var(--d) * var(--step-y)), 0)
+    scale(calc(1 - var(--d) * 0.038))
+    rotate(calc(var(--d) * 1.1deg));
+  transform-origin: 50% 100%;
+  transition: transform 0.52s cubic-bezier(0.22, 0.86, 0.3, 1),
+              opacity 0.42s ease;
+  will-change: transform;
+}
+
+/* only the front card is live. the rest are scenery until they come forward. */
+.cards.rolo-on .rolo-slot[inert] { pointer-events: none; }
+.cards.rolo-on .rolo-slot:not(.is-front) .card { box-shadow: var(--shadow); }
+.cards.rolo-on .rolo-slot.is-front .card {
+  box-shadow: var(--shadow), 0 26px 34px -24px rgba(0, 0, 0, 0.38);
+}
+
+/* the front card sits in the flow of the pile's measured height */
+.cards.rolo-on .rolo-slot.is-front { position: relative; }
+
+/* ---------- pile controls ---------- */
+.rolo-bar {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0.35rem;
+  margin: 1.5rem 0 0;
+}
+
+.rolo-arm {
+  appearance: none; border: 0; background: none;
+  padding: 0.25rem 0.5rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.rolo-arm svg { display: block; width: 42px; height: 20px; overflow: visible; }
+.rolo-arm svg path {
+  fill: none; stroke: currentColor; stroke-width: 1.7;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.rolo-arm:hover { color: var(--pen); transform: translateY(-1px); }
+.rolo-arm[data-dir="-1"]:hover { transform: translateX(-3px); }
+.rolo-arm[data-dir="1"]:hover { transform: translateX(3px); }
+.rolo-arm:focus-visible { outline: 2px solid var(--pen); outline-offset: 3px; }
+
+.rolo-count {
+  min-width: 8.5rem; text-align: center;
+  margin: 0; font-size: 1.25rem;
+  color: var(--ink-soft);
+  user-select: none;
+}
+
+/* the thumbtacks. one per card, the front one pressed in. */
+.rolo-tacks { display: flex; justify-content: center; gap: 0.55rem; margin: 0.5rem 0 0; }
+.rolo-tack {
+  appearance: none; padding: 0; cursor: pointer;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: transparent;
+  border: 1.6px solid var(--ink-soft);
+  opacity: 0.55;
+  transition: background-color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+.rolo-tack:hover { opacity: 1; transform: scale(1.15); }
+.rolo-tack[aria-current="true"] {
+  background: var(--pen); border-color: var(--pen);
+  opacity: 1;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25);
+}
+.rolo-tack:focus-visible { outline: 2px solid var(--pen); outline-offset: 3px; }
+
+.rolo-spread {
+  display: block; margin: 0.9rem auto 0;
+  background: none; border: 0; padding: 0.2rem 0.4rem;
+  font-family: "Caveat", "Segoe Script", cursive;
+  font-size: 1.15rem; color: var(--ink-soft);
+  cursor: pointer; border-radius: 4px;
+  text-decoration: underline; text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+.rolo-spread:hover { color: var(--pen); }
+.rolo-spread:focus-visible { outline: 2px solid var(--pen); outline-offset: 2px; }
+
+/* dragging the pile: no text selection mid-flick, and kill the transition so
+   the card tracks the finger instead of lagging behind it */
+.cards.rolo-dragging { user-select: none; }
+.cards.rolo-dragging .rolo-slot { transition: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cards.rolo-on .rolo-slot { transition: none; }
+  .rolo-arm, .rolo-tack { transition: none; }
+}
+
 /* ---------- margin notes ---------- */
 .note {
   font-family: "Caveat", "Segoe Script", cursive;
