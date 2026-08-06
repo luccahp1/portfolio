@@ -70,11 +70,11 @@
     <section id="now" aria-labelledby="now-h">
       <h2 id="now-h" class="display h2">now<span class="h-under" aria-hidden="true"></span></h2>
       <ul class="now-list">
-        <li>building <strong>atrio</strong> and <strong>outpace</strong> - two ai tools for small service businesses</li>
-        <li>pitching them to a real <span class="tip" tabindex="0" data-tip="canadian for rain gutters. we are a proud people.">eavestroughs</span> company. a live call. no slides, just the working thing</li>
+        <li>building <strong>atrio</strong> - an ai receptionist that answers a real business line. <strong>outpace</strong> is built and parked behind it</li>
+        <li>pitching it to a real <span class="tip" tabindex="0" data-tip="canadian for rain gutters. we are a proud people.">eavestroughs</span> company. a live call. no slides, just the working thing</li>
         <li>keeping the server in my closet fed and warm</li>
       </ul>
-      <p class="mono micro">last updated jul 3, 2026 - by hand, like everything here</p>
+      <p class="mono micro">last updated aug 6, 2026 - by hand, like everything here</p>
     </section>
 
     <!-- ============ work ============ -->
@@ -93,7 +93,7 @@
             <p>answers a business's new leads in minutes, in the owner's own voice, and follows up
             until a human replies. built for trades that leak leads on nights and weekends -
             because the first company to answer usually wins the job.</p>
-            <p class="mono stack">next.js · claude · turso</p>
+            <p class="mono stack">next.js · claude · libsql</p>
             <p class="hand card-note">the hard part wasn't the ai. it was teaching it to be polite about following up.</p>
           </article>
         </div>
@@ -103,8 +103,10 @@
             <span class="tape" aria-hidden="true"></span>
             <h3 class="display">atrio</h3>
             <p>an ai front desk. a phone receptionist that learns a business by reading its website,
-            then answers calls like it has worked there for years. no menus, no "press 2".</p>
-            <p class="mono stack">next.js · vapi · claude</p>
+            then answers calls like it has worked there for years. no menus, no "press 2".
+            it's live on a real number, on a bridge i wrote: signalwire audio straight into an
+            inworld speech-to-speech session, about 700ms from you talking to it talking back.</p>
+            <p class="mono stack">node · signalwire · inworld · claude</p>
             <p class="hand card-note">yes, it's a robot that answers phones. no, it will not put you on hold.</p>
           </article>
         </div>
@@ -263,9 +265,9 @@
       <h3>Independent Product Developer - Atrio &amp; Outpace</h3>
       <p class="r-meta">London, ON · 2025 – Present</p>
       <ul>
-        <li>Designed and built <strong>Atrio</strong>, an AI phone receptionist that learns a business from its website and answers calls naturally (Next.js, Vapi voice agents, Claude API).</li>
-        <li>Designed and built <strong>Outpace</strong>, a speed-to-lead system that replies to inbound leads in the owner's own voice within minutes and automates follow-up (Next.js, Claude, Turso); modeled pricing, ~90%+ gross-margin unit economics, and safety rails (plan limits, AI budget caps).</li>
-        <li>Currently pitching both products to a local service business through live, working demos.</li>
+        <li>Built <strong>Atrio</strong>, an AI phone receptionist live on a real number 24/7. Migrated it off a third-party voice vendor onto a custom Node bridge that streams G.711 audio untranscoded between SignalWire telephony and an Inworld speech-to-speech session: ~640-820 ms from caller speech to first audio.</li>
+        <li>Runs Atrio on self-hosted Ubuntu (systemd, nginx WebSocket routing) behind a 20-check preflight and a watchdog probing the live call path every 10 minutes; a Claude API distiller builds each client's answer set from their website.</li>
+        <li>Built <strong>Outpace</strong>, a speed-to-lead system replying to inbound leads in the owner's voice within minutes (Next.js, Claude API, libSQL/SQLite, 40 unit tests); modeled ~90%+ gross-margin unit economics and the safety rails behind it (plan limits, AI budget caps). Pitching Atrio to a local service business on live demo calls.</li>
         <li>Completed 15+ paid freelance automation and utility projects (Fiverr), managing full lifecycle from requirements to delivery; built and maintain the Twins Cafe website.</li>
       </ul>
 
@@ -289,9 +291,9 @@
       <h2>Skills</h2>
       <p><strong>Languages:</strong> Java, Python, JavaScript/TypeScript, SQL, C++</p>
       <p><strong>Backend:</strong> Spring Boot &amp; Spring Boot Admin, REST APIs, MVC, JWT/cookie auth, Node.js/Next.js</p>
-      <p><strong>AI:</strong> Claude API integration, voice agents (Vapi), prompt &amp; agent design, cost/limit engineering</p>
+      <p><strong>AI:</strong> Claude API integration, realtime speech-to-speech voice (Inworld, SignalWire, Vapi), prompt &amp; agent design, cost/limit engineering</p>
       <p><strong>Frontend:</strong> React/Next.js, HTML/CSS, Tailwind</p>
-      <p><strong>Data &amp; Ops:</strong> MySQL, SQLite/Turso, relational design · Ubuntu, nginx, systemd, Tailscale, Git, Vercel, Postman</p>
+      <p><strong>Data &amp; Ops:</strong> MySQL, SQLite/libSQL, relational design · Ubuntu, nginx, systemd, Tailscale, ngrok, Git, Vercel, Postman</p>
       <p><strong>Practices:</strong> Agile, debugging legacy codebases, technical documentation, regression testing</p>
     </section>
 
