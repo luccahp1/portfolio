@@ -1,0 +1,60 @@
+name: Bootstrap ASCII portrait
+
+# Run this by hand from the Actions tab when the photo changes. It is separate
+# from the daily job on purpose: the portrait pipeline pulls in pillow, numpy
+# and opencv, which is far too much to install every morning for art that does
+# not change.
+#
+# With no photo committed it falls back to the GitHub avatar, which is why this
+# runs here rather than locally: github.com/<user>.png needs no token, just
+# network.
+"on":
+  workflow_dispatch:
+    inputs:
+      photo:
+        description: "Path to a committed photo. Blank uses the GitHub avatar."
+        required: false
+        default: ""
+      cutout:
+        description: "Remove the background with rembg. Off gives a full-frame
+          render, which only looks right on an already-plain background."
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  portrait:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r scripts/requirements-portrait.txt
+      - if: ${{ inputs.cutout }}
+        run: pip install rembg
+      - name: Prep the photo
+        # Inputs go through the environment, never straight into the script
+        # body: ${{ }} interpolation happens before the shell ever sees it.
+        env:
+          PHOTO: ${{ inputs.photo }}
+          CUTOUT: ${{ inputs.cutout }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          set -eu
+          args=""
+          if [ "$CUTOUT" != "true" ]; then
+            args="--no-cutout"
+          fi
+          if [ -n "$PHOTO" ]; then
+            python scripts/prep_photo.py "$PHOTO" $args
+          else
+            python scripts/prep_photo.py --github "$OWNER" $args
+          fi
+      - run: python scripts/make_ascii_svg.py
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: regenerate the ASCII portrait [skip ci]"
+          file_pattern: "profile/ascii-portrait.svg profile/data/source-prepped.png"

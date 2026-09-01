@@ -1,0 +1,8 @@
+# Portrait pipeline. Only needed when the photo changes, so it is kept out of
+# requirements.txt to keep the daily workflow fast.
+pillow>=10.3
+numpy>=1.26
+opencv-python-headless>=4.9
+# Optional: background removal. Pulls onnxruntime (~200 MB), so prep_photo.py
+# treats it as optional and falls back to a centre crop when it is missing.
+# rembg>=2.0
