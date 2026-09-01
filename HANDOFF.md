@@ -1,6 +1,17 @@
 # Handoff - portfolio
 
 ## Current state
+- **profile art** (`profile/`, `scripts/`, two workflows): the animated GitHub *profile*
+  README, kept in this repo. Three self-contained SVGs - `ascii-portrait.svg` (types itself in
+  row by row, SMIL clip wipes with a green cursor riding each edge), `info-card.svg` (neofetch
+  panel, hand-authored copy, lines fade up on a stagger), `contrib-heatmap.svg` (the real 53x7
+  calendar, CSS keyframes revealing it on a diagonal). Each one paints its own dark terminal
+  panel, plays once, and freezes. `profile/README.md` lays them out at 370 + 490 = 860.
+  `fetch_contributions.py` scrapes `github.com/users/<user>/contributions` (public HTML, no
+  token, no GraphQL) into `profile/data/contributions.json`; `update-profile-art.yml` runs it on
+  a 06:17 UTC cron and commits the result. `bootstrap-portrait.yml` is manual and runs the heavy
+  photo pipeline. Not on the profile page yet - copy `profile/*` plus the daily workflow into the
+  root of a `luccahp1/luccahp1` repo.
 - v1.6: **the pile** (`js/rolo.js`, `.rolo-*` in `css/style.css`). the four project cards are a
   stack on a desk instead of a 2x2 grid. front card is readable, three lean up behind it. flip via
   pencil-arrow buttons, a thumbtack row, `←`/`→` while focus is inside the pile, or a horizontal
@@ -29,6 +40,12 @@
 - No backend, no build step. Visitor data stays in their localStorage.
 
 ## Next steps
+- Profile art: create the `luccahp1/luccahp1` repo (the name has to match the username exactly),
+  copy `profile/*` and `.github/workflows/update-profile-art.yml` into its root, then run the
+  workflow once by hand from the Actions tab to confirm it commits a fresh SVG. Until the first
+  run, the committed heatmap is an honest empty grid that says so rather than inventing numbers.
+- Profile art: run `bootstrap-portrait.yml` (Actions tab) to replace the placeholder bust with the
+  real portrait. It defaults to the GitHub avatar; pass a committed photo path for a better one.
 - Deployed to GitHub Pages: https://luccahp1.github.io/portfolio/ (repo public, Pages on main/root). The root https://luccahp1.github.io redirects here via a separate `luccahp1.github.io` repo.
 - Optional: point a custom domain at it (update the two hardcoded URLs in `404.html` if so).
 - Replace "somewhere north enough" with a real location if Lucca wants one.
@@ -37,6 +54,25 @@
 - Optional: OG image for link previews.
 
 ## Notes / gotchas
+- Profile art, the things that cost time:
+  - `xml:space="preserve"` has to sit on **every** `<text>` in the ASCII portrait. It does not
+    inherit through a `<g>` in SVG2 text layout, and without it the leading spaces collapse,
+    `textLength` stretches what is left, and every row lands at a different scale.
+  - `textLength` + `lengthAdjust="spacingAndGlyphs"` per row is what makes the art hold its shape:
+    an `<img>`-embedded SVG cannot load a font, so the glyph advance of whatever monospace the
+    reader has must not be trusted.
+  - The font stack in `profile_config.MONO` uses single quotes. It lands inside double-quoted XML
+    attributes, and double quotes there end the attribute and break the file.
+  - One `class` attribute per element. The heatmap's `anim()` merges the base class and the
+    animation class for exactly this reason; emitting both is a duplicate-attribute XML error.
+  - Every SVG paints its own `#0d1117` panel. An `<img>`-embedded SVG only sees the reader's OS
+    colour scheme, not the theme they picked on GitHub, so light text on a transparent background
+    disappears for half the people looking at it.
+  - GitHub markdown: inline `style=""` is stripped (only `<br>` gives vertical space), `<h1>`/`<h2>`
+    draw a full-width rule, two images share a row only inside a `<table>`, and there is no
+    JavaScript and no external CSS - which is the whole reason the motion lives inside the SVGs.
+  - Chromium's `--virtual-time-budget` does not advance the animation clock of an SVG inside an
+    `<img>`. Preview with real waits (Playwright) or with `STATIC=1`.
 - House style: no em dashes anywhere in this repo - use plain hyphens. Same for anything new you write into it.
 - The pile's transforms live on `.rolo-slot`, NEVER on `.card`. `.card`'s transform already has two
   owners (`.tilt-a`/`.tilt-b` and the tape incident's `.fallen`/`.pinned`) and a third would fight

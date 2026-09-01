@@ -1,0 +1,4 @@
+# Daily automation only needs to scrape and draw the heatmap.
+# Keep this file small: the cron workflow installs it every run.
+requests==2.32.3
+beautifulsoup4==4.12.3
