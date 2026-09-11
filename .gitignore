@@ -5,3 +5,7 @@ __pycache__/
 node_modules/
 dist/
 build/
+
+# local project memory, stays off the public repo
+.assistant/
+CLAUDE.md
