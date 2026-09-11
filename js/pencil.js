@@ -49,7 +49,13 @@
 
   function fit() {
     const w = document.documentElement.clientWidth;
+    /* the canvas sits absolute inside the page, so its own height counts
+       toward scrollHeight. measure with it collapsed, or every resize reads
+       back the height it just set and ratchets the page taller forever. */
+    const prevH = canvas.style.height;
+    canvas.style.height = "0";
     const h = document.documentElement.scrollHeight;
+    canvas.style.height = prevH;
     const dpr = Math.min(2, window.devicePixelRatio || 1);
     if (canvas.width === Math.round(w * dpr) && canvas.height === Math.round(h * dpr)) return;
     canvas.width = Math.round(w * dpr);
@@ -186,8 +192,14 @@
   /* keep the canvas the size of the page */
   addEventListener("resize", fit);
   if ("ResizeObserver" in window) {
-    new ResizeObserver(fit).observe(document.body);
+    /* watch the content, not the body - the canvas is a child of body, so
+       observing body meant every resize we caused woke us up again. */
+    new ResizeObserver(fit).observe(document.querySelector("main.page") || document.body);
   }
+  /* the first fit() runs before the webfonts land, so the page is still the
+     wrong height. measure again once the layout has actually settled. */
+  addEventListener("load", fit);
+  document.fonts?.ready.then(fit);
 
   /* redraw in the new ink when the lights change (next frame, once the new
      theme's styles have actually landed) */

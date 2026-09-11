@@ -80,6 +80,7 @@
       "call me x  the site learns your name\n" +
       "race       a checkered flag, for people in a hurry. it remembers your best\n" +
       "physics    sliders for the lamp cord. play god, nothing saves\n" +
+      "bg         five animated backdrops. shift+B cycles them\n" +
       "lucca.*    the console api\n" +
       "hover      the name up top. the coffee in the margin. things react.\n" +
       "the tape   it's load-bearing. tug it and see.\n" +
@@ -141,6 +142,7 @@
       line("  blueprint       - shows the construction lines");
       line("  race            - checkered flag, three seconds, GO. clocks your best time");
       line("  physics         - live sliders for the cord. nothing saves, go nuts");
+      line("  bg              - five animated backdrops. `bg` lists them, `bg next` cycles");
       line("  changelog       - what changed and when");
       line("  vouch           - the guestbook, grown up");
       line("  call me <name>  - teach me your name");
@@ -226,6 +228,25 @@
       if (typeof r === "string") return line(r);
       if (r) { line("sliders up, top right. nothing you set there survives a reload - break anything."); close(); }
       else line("sliders down.");
+    },
+    bg(arg) {
+      const bd = window.__backdrop;
+      if (!bd) return line("the backdrop hasn't woken up yet. give it a second.");
+      const a = (arg || "").trim().toLowerCase();
+      const modes = bd.list();
+
+      if (!a || a === "ls" || a === "list") {
+        line("five ways to make the paper move. current: " + bd.current());
+        modes.forEach((m, i) => line("  " + (i + 1) + ". " + m.id.padEnd(9) + "- " + m.blurb));
+        line("  bg <name|1-5> · bg next · bg off   (shift+B cycles too)", "term-dim");
+        return;
+      }
+      if (a === "next" || a === "cycle") return line(bd.next());
+
+      // let people type the number they just read
+      const n = parseInt(a, 10);
+      const id = n >= 1 && n <= modes.length ? modes[n - 1].id : a;
+      line(bd.set(id));
     },
     rewire() { line(window.lucca?.rewire?.() || "hm."); },
     forget() { line(window.lucca?.forget() || "hm."); },

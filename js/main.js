@@ -1000,6 +1000,9 @@
     race,
     physics: physToggle,
     rewire,
+    bg: (which) => window.__backdrop
+      ? (which === undefined ? window.__backdrop.next() : window.__backdrop.set(which))
+      : "the backdrop hasn't woken up yet.",
     forget: () => {
       // the latch matters: without it, the 30s heartbeat and the ghost's
       // pagehide stash would quietly re-save everything we just deleted
