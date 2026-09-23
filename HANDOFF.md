@@ -60,5 +60,5 @@
 - Google Fonts (Fraunces, Caveat) are the only external requests; the site degrades fine without them.
 - The lowercase voice is intentional on screen; print output comes from the hidden `.print-resume` block (professionally capitalized). Keep it in sync with `resume.html` and `C:\Bin\Resume\2026\`.
 - Resume dates: WSIB is listed as "May 2025 – Present" - update if the co-op has ended.
-- Reduced-motion users get a static cord (physics never wakes; `physics` command explains itself instead of opening); taps/keyboard still toggle the theme. The race banner still works (it's just text swaps).
+- The site deliberately ignores `prefers-reduced-motion` (removed on purpose): every visitor gets the full motion - rope physics, ghost, confetti, flicker, card transitions. Don't add it back without asking Lucca.
 - Cord tuning defaults live in `PHYS_DEF` at the top of the cord section in `js/main.js`.

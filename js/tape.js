@@ -5,7 +5,7 @@
 (function () {
   const site = window.__site;
   if (!site) return;
-  const { toast, prefersReduced } = site;
+  const { toast } = site;
 
   /* what lucca says while he pins your vandalism back up. random, no
      immediate repeats - he has more than two feelings about this. */
@@ -62,10 +62,10 @@
     if (!card || card.dataset.pinned) return;
     card.dataset.pinned = "1";
     tape.classList.add("peeled");
-    setTimeout(() => tape.remove(), prefersReduced ? 0 : 600);
+    setTimeout(() => tape.remove(), 600);
     card.classList.add("fallen");
     const spec = planPin();
-    setTimeout(() => sendLucca(card, spec), prefersReduced ? 150 : 900);
+    setTimeout(() => sendLucca(card, spec), 900);
   }
 
   function placePin(card, spec) {
@@ -85,8 +85,6 @@
   }
 
   function sendLucca(card, spec) {
-    if (prefersReduced) return placePin(card, spec);
-
     const r = card.getBoundingClientRect();
     const tx = scrollX + r.left + r.width * (spec.leftPct / 100) - 4;
     const ty = scrollY + r.top + spec.topPx - 10;

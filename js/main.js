@@ -9,7 +9,6 @@
   const $ = (s) => document.querySelector(s);
   const now = () => Date.now();
 
-  const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const isTouch = matchMedia("(pointer: coarse)").matches;
 
   /* ---------- state ---------- */
@@ -223,7 +222,6 @@
   }
 
   function sparks(x, y) {
-    if (prefersReduced) return;
     for (let i = 0; i < 14; i++) {
       const s = document.createElement("i");
       s.className = "spark";
@@ -376,7 +374,7 @@
     return Math.hypot(mCX - (r.left + r.width / 2), mCY - (r.top + r.height * 0.7)) < PH.wake;
   }
   function ropeWake() {
-    if (ropeRunning || prefersReduced || !cordSvg) return;
+    if (ropeRunning || !cordSvg) return;
     ropeRunning = true; ropeCalm = 0; ropeT = performance.now();
     requestAnimationFrame(ropeLoop);
   }
@@ -442,7 +440,6 @@
   // a filter on body: filters turn body into a containing block and yank
   // every position:fixed thing out of the viewport.)
   function flickerLights() {
-    if (prefersReduced) return;
     const f = document.createElement("div");
     f.className = "flick";
     document.body.appendChild(f);
@@ -464,20 +461,18 @@
     const r = cordBtn.getBoundingClientRect();
     sparks(r.left + r.width / 2, r.top + 10);
     cordBtn.classList.add("snapped");
-    if (!prefersReduced) {
-      // the loose end goes where gravity says
-      const fall = document.createElement("div");
-      fall.className = "cord-fall";
-      fall.style.left = r.left - 2 + "px";
-      fall.style.top = r.top + 22 + "px";
-      fall.innerHTML =
-        '<svg viewBox="0 0 24 62" width="24" height="62" aria-hidden="true">' +
-        '<line x1="12" y1="0" x2="12" y2="48" class="cord-line"/>' +
-        '<circle cx="12" cy="54" r="6" class="cord-knob"/></svg>';
-      document.body.appendChild(fall);
-      setTimeout(() => fall.remove(), 1500);
-      flickerLights();
-    }
+    // the loose end goes where gravity says
+    const fall = document.createElement("div");
+    fall.className = "cord-fall";
+    fall.style.left = r.left - 2 + "px";
+    fall.style.top = r.top + 22 + "px";
+    fall.innerHTML =
+      '<svg viewBox="0 0 24 62" width="24" height="62" aria-hidden="true">' +
+      '<line x1="12" y1="0" x2="12" y2="48" class="cord-line"/>' +
+      '<circle cx="12" cy="54" r="6" class="cord-knob"/></svg>';
+    document.body.appendChild(fall);
+    setTimeout(() => fall.remove(), 1500);
+    flickerLights();
     toast(again
       ? "you broke it AGAIN. ok. hold on. i'm getting the toolbox."
       : "annnd it snapped. lights are stuck like this now. hope it was worth it.", 4200, cordAt());
@@ -558,7 +553,7 @@
 
   function pullCord() {
     if (cordSnapped || cordDead) return;
-    if (!prefersReduced && nodes.length) {
+    if (nodes.length) {
       nodes[ropeEnd].py -= 10;   // a yank counts as a shove
       ropeWake();
     }
@@ -601,7 +596,6 @@
     if (!cordDead) ropeWake();
   }
   function physToggle() {
-    if (prefersReduced) return "your system asked for reduced motion, so the cord doesn't simulate. sliders would just be lying to you.";
     if (physPanel) { physPanel.remove(); physPanel = null; return false; }
     physPanel = document.createElement("div");
     physPanel.className = "phys-panel";
@@ -813,7 +807,6 @@
 
   /* ---------- paper-scrap confetti, for the speedrunners ---------- */
   function confetti() {
-    if (prefersReduced) return;
     const colors = ["var(--pen)", "var(--red)", "#e8c96f", "var(--ink-soft)"];
     for (let i = 0; i < 60; i++) {
       const c = document.createElement("i");
@@ -977,14 +970,6 @@
     season.hidden = false;
   }
 
-  /* ---------- courtesy, if your system asked for less motion ---------- */
-  if (prefersReduced && fm) {
-    const p = document.createElement("p");
-    p.className = "mono micro";
-    p.textContent = "motion is reduced because your system asked. the ghost respects that.";
-    fm.insertAdjacentElement("afterend", p);
-  }
-
   /* ---------- the spoilers ---------- */
   const spBtn = $("#spoiler-btn"), spPanel = $("#spoiler-panel");
   if (spBtn && spPanel) {
@@ -994,7 +979,7 @@
       spBtn.setAttribute("aria-expanded", String(opening));
       spBtn.textContent = opening ? "ok, hide them again" : "ok fine - reveal every secret";
       if (opening) {
-        spPanel.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "nearest" });
+        spPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
         if (!state.spoiled) {
           state.spoiled = true;
           save();
@@ -1027,5 +1012,5 @@
   };
 
   /* shared bits for the other files */
-  window.__site = { state, save, toast, prefersReduced, isTouch, rel, BORN, setName };
+  window.__site = { state, save, toast, isTouch, rel, BORN, setName };
 })();

@@ -320,11 +320,6 @@ h1.display {
 .cards.rolo-dragging { user-select: none; }
 .cards.rolo-dragging .rolo-slot { transition: none; }
 
-@media (prefers-reduced-motion: reduce) {
-  .cards.rolo-on .rolo-slot { transition: none; }
-  .rolo-arm, .rolo-tack { transition: none; }
-}
-
 /* ---------- margin notes ---------- */
 .note {
   font-family: "Caveat", "Segoe Script", cursive;
@@ -935,13 +930,6 @@ code {
   text-shadow:
     0 0 5px var(--paper), 0 0 10px var(--paper),
     0 0 16px var(--paper), 0 0 24px var(--paper);
-}
-
-/* ---------- reduced motion ---------- */
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-  .squig path { stroke-dashoffset: 0; animation: none; }
 }
 
 /* ---------- small screens ---------- */

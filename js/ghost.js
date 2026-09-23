@@ -6,7 +6,7 @@
 (function () {
   const site = window.__site;
   if (!site) return;
-  const { state, save, toast, prefersReduced, isTouch, rel } = site;
+  const { state, save, toast, isTouch, rel } = site;
 
   const SAMPLE_MS = 70;
   const MAX_PTS = 700;
@@ -141,7 +141,6 @@
 
   function play(which) {
     if (playing) return "one ghost at a time.";
-    if (prefersReduced) return "your system asked for less motion, so the ghost is resting.";
 
     let src, label;
     if (which !== "lucca" && prev) {
@@ -206,7 +205,7 @@
   }
 
   /* ---------- auto-play: soon, every visit - plus an encore for lingerers ---------- */
-  if (!prefersReduced && !isTouch && innerWidth > 760) {
+  if (!isTouch && innerWidth > 760) {
     setTimeout(() => {
       if (!document.hidden) play(prev ? "you" : "lucca");
     }, AUTO_DELAY);
