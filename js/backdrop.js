@@ -10,7 +10,7 @@
 (function () {
   const site = window.__site;
   if (!site) return;
-  const { state, save, toast, prefersReduced } = site;
+  const { state, save, toast } = site;
 
   const canvas = document.createElement("canvas");
   canvas.className = "backdrop";
@@ -74,7 +74,6 @@
     id: "flow",
     blurb: "ink on a vector field. particles drifting downstream.",
     alpha: 0.5,
-    warm: 220,
     init() {
       const n = Math.min(420, Math.round((W * H) / 3400));
       this.p = [];
@@ -395,12 +394,6 @@
     cur.init();
     t0 = performance.now();
     canvas.style.opacity = cur.alpha;
-    if (prefersReduced) {
-      // no animation, but a still frame beats a blank page. warm it up once.
-      const n = cur.warm || 1;
-      for (let i = 0; i < n; i++) cur.step(i * 0.033);
-      return;
-    }
     if (!raf) raf = requestAnimationFrame(frame);
   }
 
@@ -424,8 +417,7 @@
     start();
     state.bg = m.id; save();
     if (!quiet) toast("backdrop: " + m.id + " - " + m.blurb, 3600);
-    return "backdrop: " + m.id + " - " + m.blurb +
-      (prefersReduced ? "\n(your system asked for reduced motion, so it's a still frame.)" : "");
+    return "backdrop: " + m.id + " - " + m.blurb;
   }
 
   function next() {
@@ -441,10 +433,7 @@
   });
 
   // the inks change with the lights
-  new MutationObserver(() => {
-    readColours();
-    if (cur && prefersReduced) start();
-  }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  new MutationObserver(readColours).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
   document.addEventListener("keydown", (e) => {
     if (e.key !== "B" || !e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return;

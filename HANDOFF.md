@@ -1,6 +1,14 @@
 # Handoff - portfolio
 
 ## Current state
+- v1.7: **the backdrop** (`js/backdrop.js`, `.backdrop` in `css/style.css`). one fixed, viewport-sized
+  canvas at z-index -1 behind everything, five modes: `flow` (particles on a noise field, the default),
+  `topo` (contour lines), `life`, `truchet`, `dither`. switch with `bg` in the terminal (`bg`, `bg 3`,
+  `bg next`, `bg off`), shift+B, or `lucca.bg()`. the pick persists in `state.bg`. draws at ~30fps and
+  skips frames while the tab is hidden. verified headless 2026-10-15: all five modes run clean, light
+  and dark, and the page height does not move.
+  - `pencil.js` got its ratchet fix in the same change: it measures the page with its own canvas
+    collapsed and watches `main.page` instead of body, so a resize can no longer grow the page forever.
 - v1.6: **the pile** (`js/rolo.js`, `.rolo-*` in `css/style.css`). the four project cards are a
   stack on a desk instead of a 2x2 grid. front card is readable, three lean up behind it. flip via
   pencil-arrow buttons, a thumbtack row, `←`/`→` while focus is inside the pile, or a horizontal
