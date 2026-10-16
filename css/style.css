@@ -971,7 +971,7 @@ code {
     color: #111;
     font: 10pt/1.45 Georgia, "Times New Roman", serif;
   }
-  .print-resume h1 {
+  .print-resume .r-name {
     margin: 0;
     font: 700 19pt/1.1 Georgia, serif;
     letter-spacing: 0.01em;
