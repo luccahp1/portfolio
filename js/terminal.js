@@ -152,6 +152,7 @@
       line("  blueprint       - shows the construction lines");
       line("  race            - checkered flag, three seconds, GO. clocks your best time");
       line("  physics         - live sliders for the cord. nothing saves, go nuts");
+      line("  flashlight      - lights out, uv torch on. there's writing on the walls. `f` works too");
       line("  bg              - five animated backdrops. `bg` lists them, `bg next` cycles");
       line("  changelog       - what changed and when");
       line("  vouch           - the guestbook, grown up");
@@ -258,6 +259,8 @@
       const id = n >= 1 && n <= modes.length ? modes[n - 1].id : a;
       line(bd.set(id));
     },
+    flashlight() { close(); window.__site.toast(window.lucca?.flashlight() || "hm.", 2400); },
+    uv() { commands.flashlight(); },
     rewire() { line(window.lucca?.rewire?.() || "hm."); },
     forget() { line(window.lucca?.forget() || "hm."); },
     clear() { body.textContent = ""; },

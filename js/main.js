@@ -1000,6 +1000,7 @@
     race,
     physics: physToggle,
     rewire,
+    flashlight: () => window.__flashlight?.toggle() || "the batteries aren't in yet.",
     bg: (which) => window.__backdrop
       ? (which === undefined ? window.__backdrop.next() : window.__backdrop.set(which))
       : "the backdrop hasn't woken up yet.",
@@ -1015,5 +1016,5 @@
   };
 
   /* shared bits for the other files */
-  window.__site = { state, save, toast, isTouch, rel, BORN, setName };
+  window.__site = { state, save, toast, isTouch, rel, BORN, setName, confetti };
 })();

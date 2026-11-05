@@ -1,6 +1,7 @@
 # Handoff - portfolio
 
 ## Current state
+- v1.8: **uv ink** (`js/flashlight.js`, `.dark-room`/`.uv-note`/`.lights-on` in `css/style.css`). `flashlight` or `uv` in the terminal, `f`, or `lucca.flashlight()` turns the lights out and the pointer/finger becomes a uv torch. six handwritten notes are pinned into sections (`NOTES` array, positions in % of the section) and only show inside the beam; each one counts as found after ~350ms lit, all six fires confetti. the dark is a 300vmax div moved with translate3d only, so it never repaints. forces dark theme while on (uv ink can't be read on cream) and restores the visitor's theme on exit without saving over it. `Esc` or the top "turn the lights back on" button exits. idle beam drifts on its own after ~2s. nothing persists. checked at 375px and desktop 2026-11-05.
 - 2026-11-05 phone pass: page no longer scrolls 2px sideways on phones (a tilted card poked past the edge; `overflow-x: clip` on html and body), no grey tap flash on the cord/pile, terminal input is 16px so iOS doesn't zoom in when it opens, and the terminal's padded `help` columns collapse to hanging-indent rows under 560px. cord pull, pile swipe, terminal all checked at 375px.
 - v1.7: **the backdrop** (`js/backdrop.js`, `.backdrop` in `css/style.css`). one fixed, viewport-sized
   canvas at z-index -1 behind everything, five modes: `flow` (particles on a noise field, the default),

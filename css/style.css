@@ -945,6 +945,52 @@ code {
     0 0 16px var(--paper), 0 0 24px var(--paper);
 }
 
+/* ---------- uv ink (js/flashlight.js) ----------
+   the dark is a 300vmax square centred on the beam, with a hole in its
+   gradient. js only ever moves it with translate3d, so nothing repaints. */
+.dark-room {
+  position: fixed; left: 0; top: 0; z-index: 28;
+  width: 300vmax; height: 300vmax;
+  margin: -150vmax 0 0 -150vmax;
+  pointer-events: none;
+  opacity: 0; visibility: hidden;
+  background:
+    radial-gradient(circle at center, rgba(150, 110, 255, 0.16) 0, rgba(150, 110, 255, 0) 95px),
+    radial-gradient(circle at center, rgba(6, 5, 12, 0) 0, rgba(6, 5, 12, 0) 62px,
+                    rgba(6, 5, 12, 0.72) 100px, rgba(6, 5, 12, 0.965) 150px);
+  will-change: transform;
+}
+body.lights-out .dark-room { visibility: visible; animation: torch-on 0.7s steps(1, end) forwards; }
+@keyframes torch-on {
+  0% { opacity: 0.6; } 12% { opacity: 0.1; } 22% { opacity: 0.85; }
+  34% { opacity: 0.3; } 46%, 100% { opacity: 1; }
+}
+
+.uv-host { position: relative; }
+.uv-note {
+  position: absolute; z-index: 6; margin: 0;
+  max-width: min(15rem, 70vw);
+  font-family: "Caveat", "Segoe Script", cursive; font-size: 1.45rem; line-height: 1.15;
+  color: #c8b2ff;
+  text-shadow: 0 0 6px rgba(170, 130, 255, 0.9), 0 0 18px rgba(140, 90, 255, 0.6);
+  transform: rotate(var(--tilt, 0deg));
+  pointer-events: none; user-select: none;
+  opacity: 0; transition: opacity 0.4s ease;
+}
+body.lights-out .uv-note { opacity: 1; }
+.uv-note.found { color: #efe6ff; }
+
+.lights-on {
+  position: fixed; left: 50%; top: 4.4rem; z-index: 29;
+  transform: translate(-50%, -1rem);
+  background: none; border: 1px dashed rgba(200, 178, 255, 0.5); border-radius: 999px;
+  padding: 0.3rem 1rem; color: #c8b2ff; font-size: 1.25rem; cursor: pointer; white-space: nowrap;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s ease 0.6s, transform 0.4s ease 0.6s;
+}
+body.lights-out .lights-on { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+@media print { .dark-room, .uv-note, .lights-on { display: none !important; } }
+
 /* ---------- small screens ---------- */
 @media (max-width: 720px) {
   .hero { margin-top: 10vh; }
