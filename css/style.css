@@ -955,9 +955,9 @@ code {
   pointer-events: none;
   opacity: 0; visibility: hidden;
   background:
-    radial-gradient(circle at center, rgba(150, 110, 255, 0.16) 0, rgba(150, 110, 255, 0) 95px),
-    radial-gradient(circle at center, rgba(6, 5, 12, 0) 0, rgba(6, 5, 12, 0) 62px,
-                    rgba(6, 5, 12, 0.72) 100px, rgba(6, 5, 12, 0.965) 150px);
+    radial-gradient(circle at center, rgba(150, 110, 255, 0.16) 0, rgba(150, 110, 255, 0) 150px),
+    radial-gradient(circle at center, rgba(6, 5, 12, 0) 0, rgba(6, 5, 12, 0) 100px,
+                    rgba(6, 5, 12, 0.72) 158px, rgba(6, 5, 12, 0.965) 230px);
   will-change: transform;
 }
 body.lights-out .dark-room { visibility: visible; animation: torch-on 0.7s steps(1, end) forwards; }
@@ -995,7 +995,9 @@ body.lights-out .lights-on { opacity: 1; pointer-events: auto; transform: transl
 @media (max-width: 720px) {
   .hero { margin-top: 10vh; }
   section { margin-top: 3.6rem; }
-  .cord svg { height: 64px; }
+  /* bigger and longer for thumbs. scaled evenly (24x90 -> 40x150) because the rope
+     maths maps the pointer through the svg's on-screen size. */
+  .cord svg { width: 40px; height: 150px; }
   .top { padding-top: 1.1rem; padding-right: 3.4rem; }
 }
 @media (max-width: 560px) {

@@ -81,12 +81,12 @@
       ctx.clearRect(0, 0, W, H);
     },
     spawn() {
-      return { x: Math.random() * W, y: Math.random() * H, life: 60 + Math.random() * 260 };
+      return { x: Math.random() * W, y: Math.random() * H, life: 220 + Math.random() * 520 };
     },
     step(t) {
       // fade the old trails without painting a background over them
       ctx.globalCompositeOperation = "destination-out";
-      ctx.fillStyle = "rgba(0,0,0,0.035)";
+      ctx.fillStyle = "rgba(0,0,0,0.022)";   // lower = longer tails, oldest end fades first
       ctx.fillRect(0, 0, W, H);
       ctx.globalCompositeOperation = "source-over";
 
@@ -369,7 +369,10 @@
        divides by it. clamp to 1 so nothing throws; the resize handler re-inits
        properly once the window has a real size again. */
     const w = Math.max(1, innerWidth || document.documentElement.clientWidth || 0);
-    const h = Math.max(1, innerHeight || document.documentElement.clientHeight || 0);
+    // size for the tallest the viewport gets (ios toolbar tucked away), so the
+    // toolbar sliding in and out never needs a new canvas
+    const h = Math.max(1, innerHeight || document.documentElement.clientHeight || 0,
+      site.isTouch ? screen.height || 0 : 0);
     DPR = Math.min(2, window.devicePixelRatio || 1);
     canvas.width = Math.round(w * DPR);
     canvas.height = Math.round(h * DPR);
@@ -427,9 +430,17 @@
 
   /* ---------- wiring ---------- */
   let rt = 0;
+  // ios safari fires resize every time its toolbar slides in or out while you
+  // scroll. that used to wipe the trails mid-scroll. only a real change (width,
+  // or taller than the canvas already is) starts over.
   addEventListener("resize", () => {
     clearTimeout(rt);
-    rt = setTimeout(() => { if (cur) start(); }, 150);
+    rt = setTimeout(() => {
+      if (!cur) return;
+      const w = Math.max(1, innerWidth || 0);
+      if (w === W && innerHeight <= H) return;
+      start();
+    }, 150);
   });
 
   // the inks change with the lights

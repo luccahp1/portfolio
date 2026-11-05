@@ -1,6 +1,7 @@
 # Handoff - portfolio
 
 ## Current state
+- 2026-11-05: uv beam ~1.6x wider (`R` in flashlight.js + the `.dark-room` gradient stops). backdrop no longer restarts when ios safari's toolbar slides in/out on scroll: the canvas is sized to `max(innerHeight, screen.height)` on touch and a resize only re-inits on a width change or a taller viewport. flow trails live longer with a gentler fade. phones get a bigger, longer cord (svg 40x150, scaled evenly so the rope maths still lines up).
 - v1.8: **uv ink** (`js/flashlight.js`, `.dark-room`/`.uv-note`/`.lights-on` in `css/style.css`). `flashlight` or `uv` in the terminal, `f`, or `lucca.flashlight()` turns the lights out and the pointer/finger becomes a uv torch. six handwritten notes are pinned into sections (`NOTES` array, positions in % of the section) and only show inside the beam; each one counts as found after ~350ms lit, all six fires confetti. the dark is a 300vmax div moved with translate3d only, so it never repaints. forces dark theme while on (uv ink can't be read on cream) and restores the visitor's theme on exit without saving over it. `Esc` or the top "turn the lights back on" button exits. idle beam drifts on its own after ~2s. nothing persists. checked at 375px and desktop 2026-11-05.
 - 2026-11-05 phone pass: page no longer scrolls 2px sideways on phones (a tilted card poked past the edge; `overflow-x: clip` on html and body), no grey tap flash on the cord/pile, terminal input is 16px so iOS doesn't zoom in when it opens, and the terminal's padded `help` columns collapse to hanging-indent rows under 560px. cord pull, pile swipe, terminal all checked at 375px.
 - v1.7: **the backdrop** (`js/backdrop.js`, `.backdrop` in `css/style.css`). one fixed, viewport-sized
@@ -47,6 +48,7 @@
 - Optional: OG image for link previews.
 
 ## Notes / gotchas
+- The cord svg must scale evenly (keep the 24:90 ratio). `toLocal()` maps the pointer through its on-screen width and height separately, but the rope's shape would squash if the ratio changed.
 - Any input must be 16px or bigger on phones, or iOS Safari zooms the page when it gets focus.
 - House style: no em dashes anywhere in this repo - use plain hyphens. Same for anything new you write into it.
 - The pile's transforms live on `.rolo-slot`, NEVER on `.card`. `.card`'s transform already has two

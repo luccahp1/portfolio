@@ -6,7 +6,7 @@
    translate3d on that div, so it stays on the compositor and never repaints. */
 (() => {
   const site = window.__site;
-  const R = 95;                 // beam radius in px; notes count as found inside ~70% of it
+  const R = 150;                // beam radius in px; notes count as found inside ~70% of it
   const FOUND_AFTER = 350;      // ms a note has to sit in the beam before it counts
 
   // anchor: a section id. at: where the note sits inside it (percent of the section box).
