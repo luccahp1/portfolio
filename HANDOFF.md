@@ -1,6 +1,7 @@
 # Handoff - portfolio
 
 ## Current state
+- 2026-11-05 phone pass: page no longer scrolls 2px sideways on phones (a tilted card poked past the edge; `overflow-x: clip` on html and body), no grey tap flash on the cord/pile, terminal input is 16px so iOS doesn't zoom in when it opens, and the terminal's padded `help` columns collapse to hanging-indent rows under 560px. cord pull, pile swipe, terminal all checked at 375px.
 - v1.7: **the backdrop** (`js/backdrop.js`, `.backdrop` in `css/style.css`). one fixed, viewport-sized
   canvas at z-index -1 behind everything, five modes: `flow` (particles on a noise field, the default),
   `topo` (contour lines), `life`, `truchet`, `dither`. switch with `bg` in the terminal (`bg`, `bg 3`,
@@ -45,6 +46,7 @@
 - Optional: OG image for link previews.
 
 ## Notes / gotchas
+- Any input must be 16px or bigger on phones, or iOS Safari zooms the page when it gets focus.
 - House style: no em dashes anywhere in this repo - use plain hyphens. Same for anything new you write into it.
 - The pile's transforms live on `.rolo-slot`, NEVER on `.card`. `.card`'s transform already has two
   owners (`.tilt-a`/`.tilt-b` and the tape incident's `.fallen`/`.pinned`) and a third would fight

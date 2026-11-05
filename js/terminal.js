@@ -14,9 +14,19 @@
   let hAt = -1;
 
   /* ---------- output ---------- */
+  // the padded "name    - what it does" columns only line up on a wide screen.
+  // on a phone they wrap into mush, so drop the padding and hang the indent.
+  const narrow = matchMedia("(max-width: 560px)");
+  const COLUMN_ROW = /^ {2}(\S.*?) {2,}- (.*)$/;
+
   function line(text, cls) {
     const el = document.createElement("div");
     if (cls) el.className = cls;
+    const row = narrow.matches && COLUMN_ROW.exec(text);
+    if (row) {
+      text = row[1] + " - " + row[2];
+      el.classList.add("term-row");
+    }
     el.textContent = text;
     body.appendChild(el);
     body.scrollTop = body.scrollHeight;

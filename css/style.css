@@ -51,7 +51,7 @@
 
 [hidden] { display: none !important; }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: clip; }   /* tilted cards poke past a phone screen; clip, never a sideways wobble */
 
 body {
   margin: 0;
@@ -59,7 +59,8 @@ body {
   color: var(--ink);
   font: 400 1.05rem/1.65 system-ui, -apple-system, "Segoe UI", sans-serif;
   transition: background-color 0.35s ease, color 0.35s ease;
-  overflow-x: hidden;
+  overflow-x: clip;
+  -webkit-tap-highlight-color: transparent;   /* no grey flash box when tapping the cord or the pile on a phone */
 }
 
 /* faint paper grain over everything */
@@ -950,6 +951,11 @@ code {
   section { margin-top: 3.6rem; }
   .cord svg { height: 64px; }
   .top { padding-top: 1.1rem; padding-right: 3.4rem; }
+}
+@media (max-width: 560px) {
+  /* iOS zooms the whole page into any input under 16px. the terminal was 13.6px. */
+  .term-input { font-size: 16px; }
+  .term-row { padding-left: 1.2em; text-indent: -1.2em; }
 }
 
 /* ---------------------------------------------------------------
